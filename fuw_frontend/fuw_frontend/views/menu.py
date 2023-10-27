@@ -1,5 +1,4 @@
 import sys
-import typing
 from PyQt6.QtWidgets import QVBoxLayout, QPushButton 
 
 class MainMenu(QVBoxLayout):
