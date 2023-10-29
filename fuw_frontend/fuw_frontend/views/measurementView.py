@@ -1,10 +1,14 @@
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit
 
-class MeasurementParametrsLayout(QHBoxLayout):
+from ..Model import Presenter
+from .utils import Controle
+
+class MeasurementParametrsLayout(QHBoxLayout,Controle):
     def __init__(self):
         super().__init__()
+    
 
-class MeasurementTitleLayout(QVBoxLayout):
+class MeasurementTitleLayout(QVBoxLayout, Controle):
     def __init__(self):
         super().__init__()
         title = QHBoxLayout()
@@ -16,11 +20,13 @@ class MeasurementTitleLayout(QVBoxLayout):
         title.addWidget(self.__action)
         self.addLayout(title)
 
-class MeasurementResultLayout(QHBoxLayout):
+    
+class MeasurementResultLayout(QHBoxLayout, Controle):
     def __init__(self):
         super().__init__()
+
     
-class MeasurementLayout(QVBoxLayout):
+class MeasurementLayout(QVBoxLayout, Controle):
     def __init__(self):
         super().__init__()
         self.__titleLayout = MeasurementTitleLayout()
@@ -29,3 +35,9 @@ class MeasurementLayout(QVBoxLayout):
         self.addLayout(self.__titleLayout)
         self.addLayout(self.__parametrsLayout)
         self.addLayout(self.__resultLayout)
+
+    def setPresenter(self, presenter: Presenter) -> None:
+        self.presenter = presenter
+        self.__titleLayout.presenter = presenter
+        self.__parametrsLayout.presenter = presenter
+        self.__resultLayout.presenter = presenter
