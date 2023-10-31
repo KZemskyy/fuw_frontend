@@ -1,6 +1,8 @@
 from enum import Enum
 from datetime import datetime
-from typing import Any
+import typing
+from PyQt6 import QtCore, QtGui
+from PyQt6.QtCore import QObject
 
 class ExperimentStatus(Enum):
     EDIT = "Edit"
@@ -16,17 +18,24 @@ class MeteringStatus(Enum):
     PARTLY_COMLETE = "partly_complete"
     COMLETE = "complete"
 
-class ModelExperiment():
+class Experiment():
     def __init__(self) -> None:
         self.description = ""
         self.dateCreate = datetime.now()
         self.lastChange = datetime.now()
         self.status = ExperimentStatus.EDIT
 
+    def __init__(self,description:str, dateCreate: datetime, lastChange: datetime, status:ExperimentStatus) -> None:
+        self.description = description
+        self.dateCreate = dateCreate
+        self.lastChange = lastChange
+        self.status = status
+
     @property
     def id(self)->int:
         return self.__id
-    @property.setter
+    
+    @id.setter
     def id(self,id:int):
         self.__id=id
     
@@ -34,15 +43,15 @@ class ModelExperiment():
     def description(self)->str:
         return self.__description
     
-    @property.setter
-    def name(self, description:str):
+    @description.setter
+    def description(self, description:str):
         self.__description = description
     
     @property
     def dateCreate(self)->datetime:
         return self.__dateCreate
     
-    @property.setter
+    @dateCreate.setter
     def dateCreate(self, date:datetime):
         self.__dateCreate = date
     
@@ -50,7 +59,7 @@ class ModelExperiment():
     def lastChange(self)->datetime:
         return self.__lastChange
     
-    @property.setter
+    @lastChange.setter
     def lastChange(self, date:datetime):
         self.__lastChange = date
     
@@ -58,9 +67,16 @@ class ModelExperiment():
     def status(self)->ExperimentStatus:
         return self.__status
     
-    @property.setter
+    @status.setter
     def status(self, experimentStatus:ExperimentStatus):
         self.__status = experimentStatus
+
+    @property
+    def meterings(self)->[]:
+        return self.__meterings
+    @meterings.setter
+    def meterings(self,meterins:[]):
+        self.__meterings = meterins
 
 class Metering():
     def __init__(self) -> None:
@@ -82,28 +98,28 @@ class Metering():
     @property
     def id(self)->int:
         return self.__id
-    @property.setter
+    @id.setter
     def id(self,id:int):
         self.__id=id
         
     @property
     def experimentId(self)->int:
         return self.__experimentId
-    @property.setter
+    @experimentId.setter
     def experimentId(self, id:int):
         self.__experimentId = id
 
     @property
     def description(self)->str:
         return self.__description
-    @property.setter
+    @description.setter
     def description(self, description:str):
         self.__description = description
         
     @property
     def status(self)->MeteringStatus:
         return self.__status
-    @property.setter
+    @status.setter
     def status(self, status:MeteringStatus):
         self.__status = status
 
@@ -118,32 +134,40 @@ class Parameter():
     @property
     def id(self)->int:
         return self.__id
-    @property.setter
+    @id.setter
     def id(self,id:int):
         self.__id=id
     
     @property
     def experimentId(self)->int:
         return self.__experimentId
-    @property.setter
+    @experimentId.setter
     def experimentId(self, id:int):
         self.__experimentId = id
     
     @property
     def name(self)->str:
         return self.__name
-    @property.setter
+    @name.setter
     def name(self, name:str):
         self.__name = name 
     
     @property
     def value(self)->float:
         return self.__value
-    @property.setter
+    @value.setter
     def value(self,value:float):
         self.__value = value 
+           
 
 class Model():
     def __init__(self) -> None:
-        pass
-    
+        self._experementList=[["Experiment1","EDIT"],["Experiment2","EDIT"]]
+       
+    def getExperementList(self):
+        return self._experementList
+        
+    def getMeteringList(self):
+        return [["Metering1", "EDIT"],["Metering2", "EDIT"],["Metering2", "EDIT"]]
+
+

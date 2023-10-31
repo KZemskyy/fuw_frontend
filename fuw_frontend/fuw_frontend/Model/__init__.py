@@ -1,1 +1,1 @@
-from .presenter import Presenter
+from .model import Model
