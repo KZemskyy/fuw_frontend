@@ -1,21 +1,25 @@
 
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QMainWindow 
 from .Model import Model
 from .presenter import Presenter
+from .views import Ui_mainWindow
 
-class MyApp(QWidget):
+class MyApp(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super(MyApp, self).__init__()
         self.__model = Model()
         self.__presenter = Presenter(self.__model)
-        layouts = QHBoxLayout()
-        layouts.addLayout(self.__presenter.getListExperemetView())
-        experement = QVBoxLayout()
-        layouts.addLayout(experement)
-        experement.addLayout(self.__presenter.getExperemetView())
-        experement.addLayout(self.__presenter.getMeasurementView())
-        self.setLayout(layouts)
+
+        self.ui = Ui_mainWindow()
+        self.ui.setupUi(self)    
+        # layouts = QHBoxLayout()
+        # layouts.addLayout(self.__presenter.getListExperemetView())
+        # experement = QVBoxLayout()
+        # layouts.addLayout(experement)
+        # experement.addLayout(self.__presenter.getExperemetView())
+        # experement.addLayout(self.__presenter.getMeasurementView())
+        # self.setLayout(layouts)
 
 def app():
     __app = QApplication([])

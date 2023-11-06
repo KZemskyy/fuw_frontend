@@ -1,7 +1,7 @@
 import sys
-from PyQt6.QtWidgets import QVBoxLayout, QPushButton,QTableView
-from PyQt6 import QtCore, QtGui
-from PyQt6.QtCore import QObject
+from PySide6.QtWidgets import QVBoxLayout, QPushButton,QTableView
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import QObject
 from .utils import LineEdit
 from ..Model import Model
 

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QLineEdit
 
 class LineEdit(QHBoxLayout):
     def __init__(self, text1:str, text2:str):

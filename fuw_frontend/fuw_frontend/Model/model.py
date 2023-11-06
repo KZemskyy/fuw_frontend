@@ -1,8 +1,5 @@
 from enum import Enum
 from datetime import datetime
-import typing
-from PyQt6 import QtCore, QtGui
-from PyQt6.QtCore import QObject
 
 class ExperimentStatus(Enum):
     EDIT = "Edit"
