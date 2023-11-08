@@ -11,15 +11,8 @@ class MyApp(QMainWindow):
         self.__model = Model()
         self.__presenter = Presenter(self.__model)
 
-        self.ui = Ui_MainWindow()
+        self.ui = self.__presenter.getUI()
         self.ui.setupUi(self)    
-        # layouts = QHBoxLayout()
-        # layouts.addLayout(self.__presenter.getListExperemetView())
-        # experement = QVBoxLayout()
-        # layouts.addLayout(experement)
-        # experement.addLayout(self.__presenter.getExperemetView())
-        # experement.addLayout(self.__presenter.getMeasurementView())
-        # self.setLayout(layouts)
 
 def app():
     __app = QApplication([])

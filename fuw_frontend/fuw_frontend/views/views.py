@@ -19,8 +19,14 @@ from PySide6.QtWidgets import (QApplication, QDateTimeEdit, QGraphicsView, QGrou
     QHBoxLayout, QHeaderView, QLabel, QLineEdit,
     QMainWindow, QPushButton, QSizePolicy, QTableView,
     QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+from ..Model import Model, Experiment
 
 class Ui_MainWindow(object):
+
+    def __init__(self, model:Model) -> None:
+        super().__init__()
+        self.__model = model
+
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -45,6 +51,7 @@ class Ui_MainWindow(object):
 
         self.experimentDescription = QLineEdit(self.layoutWidget)
         self.experimentDescription.setObjectName(u"experimentDescription")
+        self.experimentDescription.textEdited.connect(self.expetementDescriptionEdit)
 
         self.verticalLayout.addWidget(self.experimentDescription)
 
@@ -95,6 +102,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.experimentSaveButton = QPushButton(self.layoutWidget)
         self.experimentSaveButton.setObjectName(u"experimentSaveButton")
+        self.experimentSaveButton.clicked.connect(self.saveExperementFunction)
 
         self.verticalLayout_4.addWidget(self.experimentSaveButton)
 
@@ -124,6 +132,7 @@ class Ui_MainWindow(object):
 
         self.newExperementButton = QPushButton(self.layoutWidget1)
         self.newExperementButton.setObjectName(u"newExperementButton")
+        self.newExperementButton.clicked.connect(self.newExperemenetClieck)
 
         self.verticalLayout_13.addWidget(self.newExperementButton)
 
@@ -375,4 +384,16 @@ class Ui_MainWindow(object):
         self.modulationLabel_2.setText(QCoreApplication.translate("MainWindow", u"Modulation", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"number of Metering", None))
     # retranslateUi
+
+    def setNewExperementFunction(self, newExperemenetClieckAction):
+        self.newExperemenetClieck = newExperemenetClieckAction
+    def setSaveExperementFunction(self, savefunction):
+        self.saveExperementFunction = savefunction
+
+    def setExperement(self, selectedExperement:Experiment):
+        self.experimentDescription.setText(selectedExperement.description) 
+
+    def expetementDescriptionEdit(self, text):
+        self.__model.getSelectedExperement().description = text
+
 
