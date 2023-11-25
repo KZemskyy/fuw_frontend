@@ -160,7 +160,7 @@ python-versions = "<3.13,>=3.8"
 
 [[package]]
 name = "wcwidth"
-version = "0.2.9"
+version = "0.2.12"
 description = "Measures the displayed width of unicode strings in a terminal"
 category = "dev"
 optional = false
