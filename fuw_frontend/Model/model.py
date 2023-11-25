@@ -16,17 +16,17 @@ class MeteringStatus(Enum):
     COMLETE = "complete"
 
 class Experiment():
-    def __init__(self) -> None:
-        self.description = ""
+    def __init__(self):
+        self.description = "LALALALAL"
         self.dateCreate = datetime.now()
         self.lastChange = datetime.now()
         self.status = ExperimentStatus.EDIT
 
-    def __init__(self,description:str, dateCreate: datetime, lastChange: datetime, status:ExperimentStatus) -> None:
-        self.description = description
-        self.dateCreate = dateCreate
-        self.lastChange = lastChange
-        self.status = status
+    # def __init__(self,description:str, dateCreate: datetime, lastChange: datetime, status:ExperimentStatus):
+    #     self.description = description
+    #     self.dateCreate = dateCreate
+    #     self.lastChange = lastChange
+    #     self.status = status
 
     @property
     def id(self)->int:
@@ -160,7 +160,14 @@ class Parameter():
 class Model():
     def __init__(self) -> None:
         self._experementList=[["Experiment1","EDIT"],["Experiment2","EDIT"]]
-       
+        self._selectedExperement = Experiment()
+
+    def createNewExperement(self):
+        self._selectedExperement = Experiment()
+
+    def getSelectedExperement(self)->Experiment:
+        return self._selectedExperement
+
     def getExperementList(self):
         return self._experementList
         

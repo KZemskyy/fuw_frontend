@@ -1,22 +1,21 @@
 from .Model import Model
-from .views import MainMenu, ExperimentLayout, MeasurementLayout
+from .views import Ui_MainWindow
 
 class Presenter():
     def __init__(self, model:Model) -> None:
         self.__model = model
-        self.__listExperementView = MainMenu()
-        self.__experementView = ExperimentLayout()
-        self.__measurementView = MeasurementLayout()
-        listExperement = self.__model.getExperementList()
-        self.__listExperementView.setData(listExperement)
+        self.__ui = Ui_MainWindow(self.__model)
+        self.__ui.setNewExperementFunction(self.newExperemenetClieckAction)
+        self.__ui.setSaveExperementFunction(self.saveExperement)
 
-    def getListExperemetView(self):
-        return self.__listExperementView
+    def getUI(self):
+        return self.__ui
 
-    def getExperemetView(self):
-        return self.__experementView
 
-    def getMeasurementView(self):
-        return self.__measurementView
+    def newExperemenetClieckAction(self):
+        self.__model.createNewExperement()
+        self.__ui.setExperement(self.__model.getSelectedExperement())
+        print("Clicked!")
 
-    
+    def saveExperement(self):
+        print(self.__model.getSelectedExperement().description)
