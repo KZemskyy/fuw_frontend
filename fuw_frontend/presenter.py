@@ -4,10 +4,8 @@ from .views import Ui_MainWindow
 class Presenter():
     def __init__(self, model:Model) -> None:
         self.__model = model
-        self.__ui = Ui_MainWindow(self.__model)
-        self.__ui.setNewExperementFunction(self.newExperemenetClieckAction)
-        self.__ui.setSaveExperementFunction(self.saveExperement)
-
+        self.__ui = Ui_MainWindow()
+        
     def getUI(self):
         return self.__ui
 
