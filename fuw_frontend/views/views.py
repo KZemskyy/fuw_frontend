@@ -17,22 +17,19 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGraphicsView, QHBoxLayout, QHeaderView,
     QLabel, QLineEdit, QMainWindow, QPushButton,
-    QSizePolicy, QSplitter, QTableView, QTextEdit,
-    QVBoxLayout, QWidget)
+    QSizePolicy, QTableView, QTextEdit, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1073, 690)
+        MainWindow.resize(1043, 586)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.splitter = QSplitter(self.centralwidget)
-        self.splitter.setObjectName(u"splitter")
-        self.splitter.setGeometry(QRect(0, 10, 1071, 671))
-        self.splitter.setOrientation(Qt.Horizontal)
-        self.widget = QWidget(self.splitter)
+        self.widget = QWidget(self.centralwidget)
         self.widget.setObjectName(u"widget")
+        self.widget.setGeometry(QRect(0, 12, 258, 521))
         self.verticalLayout_2 = QVBoxLayout(self.widget)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -48,18 +45,21 @@ class Ui_MainWindow(object):
 
         self.descriptionEdit = QTextEdit(self.widget)
         self.descriptionEdit.setObjectName(u"descriptionEdit")
+        self.descriptionEdit.viewport().setProperty("cursor", QCursor(Qt.ArrowCursor))
 
         self.verticalLayout_2.addWidget(self.descriptionEdit)
 
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
         self.parametersLabel = QLabel(self.widget)
         self.parametersLabel.setObjectName(u"parametersLabel")
 
-        self.verticalLayout_2.addWidget(self.parametersLabel)
+        self.verticalLayout.addWidget(self.parametersLabel)
 
         self.fullLineLabel = QLabel(self.widget)
         self.fullLineLabel.setObjectName(u"fullLineLabel")
 
-        self.verticalLayout_2.addWidget(self.fullLineLabel)
+        self.verticalLayout.addWidget(self.fullLineLabel)
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.widthFullLine)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -89,12 +89,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.modulationFullLine)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
 
         self.narrowLabel = QLabel(self.widget)
         self.narrowLabel.setObjectName(u"narrowLabel")
 
-        self.verticalLayout_2.addWidget(self.narrowLabel)
+        self.verticalLayout.addWidget(self.narrowLabel)
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addWidget(self.widthNarrowLine)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
@@ -124,17 +124,17 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.modulationNarrowLine)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_5)
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
 
         self.numberRecLabel = QLabel(self.widget)
         self.numberRecLabel.setObjectName(u"numberRecLabel")
 
-        self.verticalLayout_2.addWidget(self.numberRecLabel)
+        self.verticalLayout.addWidget(self.numberRecLabel)
 
         self.numberRec = QLineEdit(self.widget)
         self.numberRec.setObjectName(u"numberRec")
 
-        self.verticalLayout_2.addWidget(self.numberRec)
+        self.verticalLayout.addWidget(self.numberRec)
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
@@ -149,7 +149,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.addWidget(self.calculationButton)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_6)
+        self.verticalLayout.addLayout(self.horizontalLayout_6)
 
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
@@ -164,28 +164,31 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.addWidget(self.statusLabel_2)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout_7)
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
 
         self.saveButton = QPushButton(self.widget)
         self.saveButton.setObjectName(u"saveButton")
 
-        self.verticalLayout_2.addWidget(self.saveButton)
+        self.verticalLayout.addWidget(self.saveButton)
 
-        self.splitter.addWidget(self.widget)
-        self.widget1 = QWidget(self.splitter)
+
+        self.verticalLayout_2.addLayout(self.verticalLayout)
+
+        self.widget1 = QWidget(self.centralwidget)
         self.widget1.setObjectName(u"widget1")
-        self.verticalLayout = QVBoxLayout(self.widget1)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.widget1.setGeometry(QRect(260, 0, 771, 571))
+        self.verticalLayout_4 = QVBoxLayout(self.widget1)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.experementlabel = QLabel(self.widget1)
         self.experementlabel.setObjectName(u"experementlabel")
 
-        self.verticalLayout.addWidget(self.experementlabel)
+        self.verticalLayout_4.addWidget(self.experementlabel)
 
         self.experementTable = QTableView(self.widget1)
         self.experementTable.setObjectName(u"experementTable")
 
-        self.verticalLayout.addWidget(self.experementTable)
+        self.verticalLayout_4.addWidget(self.experementTable)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -210,19 +213,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.lineEdit_2)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout_4.addLayout(self.horizontalLayout)
 
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.recordTable = QTableView(self.widget1)
         self.recordTable.setObjectName(u"recordTable")
 
-        self.verticalLayout.addWidget(self.recordTable)
+        self.verticalLayout_3.addWidget(self.recordTable)
 
         self.graphicsView = QGraphicsView(self.widget1)
         self.graphicsView.setObjectName(u"graphicsView")
 
-        self.verticalLayout.addWidget(self.graphicsView)
+        self.verticalLayout_3.addWidget(self.graphicsView)
 
-        self.splitter.addWidget(self.widget1)
+
+        self.verticalLayout_4.addLayout(self.verticalLayout_3)
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
