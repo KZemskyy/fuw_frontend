@@ -35,7 +35,6 @@ class Ui_MainWindow(object):
         self.widget = CreateBar(self.centralwidget)
         
         self.widget1 = QWidget(self.centralwidget)
-        self.widget1.setObjectName(u"widget1")
         self.widget1.setGeometry(QRect(260, 0, 771, 571))
         self.experementListLayout = ExperementListView(self.widget1)
         

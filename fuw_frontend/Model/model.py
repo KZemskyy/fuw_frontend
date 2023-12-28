@@ -15,18 +15,66 @@ class MeteringStatus(Enum):
     PARTLY_COMLETE = "partly_complete"
     COMLETE = "complete"
 
+
+class Parameter():
+    def __init__(self, **kwards) -> None:
+        self.__id = kwards.get("id",None)
+        self.__fullWidth = kwards.get("fullWidth",None)
+        self.__fullModulation = kwards.get("fullModulation",None)
+        self.__narrowWidth = kwards.get("narrowWidth",None)
+        self.__narrowModulation = kwards.get("narrowModulation",None)
+        self.__countMetering = kwards.get("countMetering",None)
+ 
+    @property
+    def id(self)->int:
+        return self.__id
+    @id.setter
+    def id(self, id:int):
+        self.__id=id
+    
+    @property
+    def fullWidth(self)->float:
+        return self.__fullWidth
+    @fullWidth.setter
+    def fullWidth(self, fullWidth:float):
+        self.__fullWidth = fullWidth 
+
+    @property
+    def fullModulation(self)->float:
+        return self.__fullModulation
+    @fullModulation.setter
+    def fullModulation(self, fullModulation:float):
+        self.__fullModulation = fullModulation 
+    
+    @property
+    def narrowWidth(self)->float:
+        return self.__narrowWidth
+    @narrowWidth.setter
+    def narrowWidth(self, narrowWidth:float):
+        self.__narrowWidth = narrowWidth 
+
+    @property
+    def narrowModulation(self)->float:
+        return self.__narrowModulation
+    @narrowModulation.setter
+    def narrowModulation(self, narrowModulation:float):
+        self.__narrowModulation = narrowModulation
+
+    @property
+    def countMetering(self)->int:
+        return self.__countMetering
+    @countMetering.setter
+    def id(self, countMetering:int):
+        self.__countMetering = countMetering
+
+
 class Experiment():
     def __init__(self):
-        self.description = "LALALALAL"
-        self.dateCreate = datetime.now()
-        self.lastChange = datetime.now()
-        self.status = ExperimentStatus.EDIT
-
-    # def __init__(self,description:str, dateCreate: datetime, lastChange: datetime, status:ExperimentStatus):
-    #     self.description = description
-    #     self.dateCreate = dateCreate
-    #     self.lastChange = lastChange
-    #     self.status = status
+        self.__description = "LALALALAL"
+        self.__dateCreate = datetime.now()
+        self.__lastChange = datetime.now()
+        self.__status = ExperimentStatus.EDIT
+        self.__parameter = Parameter()
 
     @property
     def id(self)->int:
@@ -67,6 +115,13 @@ class Experiment():
     @status.setter
     def status(self, experimentStatus:ExperimentStatus):
         self.__status = experimentStatus
+
+    @property
+    def parameter(self)->Parameter:
+        return self.__parameter
+    @parameter.setter
+    def parameter(self, parameter:Parameter):
+        self.__parameter = parameter
 
     @property
     def meterings(self)->[]:
@@ -119,43 +174,6 @@ class Metering():
     @status.setter
     def status(self, status:MeteringStatus):
         self.__status = status
-
-class Parameter():
-    def __init__(self, name:str) -> None:
-        self.name = name
-
-    def __init__(self,id:int, name:str) -> None:
-        self.id = id
-        self.name = name
- 
-    @property
-    def id(self)->int:
-        return self.__id
-    @id.setter
-    def id(self,id:int):
-        self.__id=id
-    
-    @property
-    def experimentId(self)->int:
-        return self.__experimentId
-    @experimentId.setter
-    def experimentId(self, id:int):
-        self.__experimentId = id
-    
-    @property
-    def name(self)->str:
-        return self.__name
-    @name.setter
-    def name(self, name:str):
-        self.__name = name 
-    
-    @property
-    def value(self)->float:
-        return self.__value
-    @value.setter
-    def value(self,value:float):
-        self.__value = value 
-           
 
 class Model():
     def __init__(self) -> None:

@@ -17,7 +17,6 @@ from .utils import LineEdit
 class ResultView(QVBoxLayout):
     def __init__(self,  parent: QWidget)->None:
         super().__init__(parent)
-
         
         self.horizontalLayout = QHBoxLayout()
         self.date = LineEdit(parent,"Date")
@@ -26,8 +25,6 @@ class ResultView(QVBoxLayout):
         self.horizontalLayout.addLayout(self.lastModification)
         self.addLayout(self.horizontalLayout)
 
-        # self.verticalLayout_3 = QVBoxLayout()
-        # self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.recordTable = QTableView(parent)
         self.addWidget(self.recordTable)
 

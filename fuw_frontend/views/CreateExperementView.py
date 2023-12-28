@@ -3,11 +3,11 @@ from PySide6.QtCore import  QRect
 
 from PySide6.QtWidgets import  QHBoxLayout, QLabel,  QPushButton, QTextEdit, QVBoxLayout, QWidget
 from .utils import LineEdit
+from ..Model import Experiment
 
 class CreateBar(QWidget):
     def __init__(self, parent: QWidget ) -> None:
         super().__init__(parent)
-        self.setObjectName(u"widget")
         self.setGeometry(QRect(0, 12, 258, 521))
         self.setupUi()
     
@@ -15,9 +15,9 @@ class CreateBar(QWidget):
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.CreateButton = QPushButton(self)
-        self.CreateButton.setText("Create")
-        self.layout.addWidget(self.CreateButton)
+        self.createButton = QPushButton(self)
+        self.createButton.setText("Create")
+        self.layout.addWidget(self.createButton)
 
         self.description = QLabel(self)
         self.description.setText("Description")
@@ -79,3 +79,13 @@ class CreateBar(QWidget):
         self.calculationButton.setText("Calculation")
         layout.addWidget(self.calculationButton)
         return layout
+    
+    def setCreateFunction(self,function)->None:
+        self.createButton.clicked.connect(function)
+
+    def setSaveFunction(self,function)->None:
+        self.saveButton.clicked.connect(function)
+
+    def bind(self, item:Experiment):
+        self.model = item
+        self.description.setText(item.description)
