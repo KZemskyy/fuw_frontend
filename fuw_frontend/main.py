@@ -9,10 +9,10 @@ class MyApp(QMainWindow):
     def __init__(self):
         super(MyApp, self).__init__()
         self.__model = Model()
-        self.__presenter = Presenter(self.__model)
+        self.__presenter = Presenter(self.__model, self)
 
         self.ui = self.__presenter.getUI()
-        self.ui.setupUi(self)    
+        # self.ui.setupUi(self)    
 
 def app():
     __app = QApplication([])

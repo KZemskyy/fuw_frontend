@@ -89,3 +89,6 @@ class CreateBar(QWidget):
     def bind(self, item:Experiment):
         self.model = item
         self.description.setText(item.description)
+    
+    def setCreateButtonListener(self, listener)->None:
+        self.createButton.clicked.connect(listener)      

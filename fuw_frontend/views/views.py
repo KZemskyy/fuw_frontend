@@ -24,15 +24,17 @@ from PySide6.QtWidgets import (QApplication, QGraphicsView, QHBoxLayout, QHeader
 from .CreateExperementView import CreateBar
 from .ExperementListView import ExperementListView
 from .ResultView import ResultView
+from ..Model import Experiment
 
 class Ui_MainWindow(object):
+        
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1043, 586)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.widget = CreateBar(self.centralwidget)
+        self.__createWidget = CreateBar(self.centralwidget)
         
         self.widget1 = QWidget(self.centralwidget)
         self.widget1.setGeometry(QRect(260, 0, 771, 571))
@@ -50,5 +52,12 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"FUW", None))
+
+    def setCreateButtonListener(self, listener)->None:
+        self.__createWidget.setCreateButtonListener(listener)        
+
+    def setExperement(self,experement:Experiment)->None:
+        self.__createWidget.bind(experement)
+
 
 
