@@ -88,7 +88,14 @@ class CreateBar(QWidget):
 
     def bind(self, item:Experiment):
         self.model = item
-        self.description.setText(item.description)
+        print(item)
+        self.descriptionEdit.setText(item.description)
+        self.fullWidth.setText(item.parameter.fullWidth)
+        self.fullModulation.setText(item.parameter.fullModulation)
+        self.narrowWidth.setText(item.parameter.narrowWidth)
+        self.narrowModulation.setText(item.parameter.narrowModulation)
+        self.numberRec.setText(item.parameter.countMetering)
+        self.status.setText(item.status.value)
     
     def setCreateButtonListener(self, listener)->None:
         self.createButton.clicked.connect(listener)      

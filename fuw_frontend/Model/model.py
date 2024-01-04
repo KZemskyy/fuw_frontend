@@ -19,11 +19,11 @@ class MeteringStatus(Enum):
 class Parameter():
     def __init__(self, **kwards) -> None:
         self.__id = kwards.get("id",None)
-        self.__fullWidth = kwards.get("fullWidth",None)
-        self.__fullModulation = kwards.get("fullModulation",None)
-        self.__narrowWidth = kwards.get("narrowWidth",None)
-        self.__narrowModulation = kwards.get("narrowModulation",None)
-        self.__countMetering = kwards.get("countMetering",None)
+        self.__fullWidth = kwards.get("fullWidth",0)
+        self.__fullModulation = kwards.get("fullModulation",0)
+        self.__narrowWidth = kwards.get("narrowWidth",0)
+        self.__narrowModulation = kwards.get("narrowModulation",0)
+        self.__countMetering = kwards.get("countMetering",0)
  
     @property
     def id(self)->int:
