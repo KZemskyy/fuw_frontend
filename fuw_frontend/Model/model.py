@@ -64,7 +64,7 @@ class Parameter():
     def countMetering(self)->int:
         return self.__countMetering
     @countMetering.setter
-    def id(self, countMetering:int):
+    def countMetering(self, countMetering:int):
         self.__countMetering = countMetering
 
 

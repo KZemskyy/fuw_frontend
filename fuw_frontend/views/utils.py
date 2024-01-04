@@ -11,3 +11,6 @@ class LineEdit(QHBoxLayout):
     
     def setText(self, text):
         self.input.setText(str(text))
+    
+    def getValue(self):
+        return self.input.text

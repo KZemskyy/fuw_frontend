@@ -54,7 +54,10 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"FUW", None))
 
     def setCreateButtonListener(self, listener)->None:
-        self.__createWidget.setCreateButtonListener(listener)        
+        self.__createWidget.setCreateButtonListener(listener)
+
+    def setSaveButtonListener(self, listener)->None:
+        self.__createWidget.setSaveButtonListener(listener)       
 
     def setExperement(self,experement:Experiment)->None:
         self.__createWidget.bind(experement)

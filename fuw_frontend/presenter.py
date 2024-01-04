@@ -9,6 +9,7 @@ class Presenter():
         self.__ui = Ui_MainWindow()
         self.__ui.setupUi(MainWindow)    
         self.__ui.setCreateButtonListener(self.newExperemenetClieckAction)
+        self.__ui.setSaveButtonListener(self.saveExperement)
         
     def getUI(self):
         return self.__ui

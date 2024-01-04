@@ -37,7 +37,9 @@ class CreateBar(QWidget):
 
         self.saveButton = QPushButton(self)
         self.saveButton.setText("Save")
+        self.saveButton.clicked.connect(self.save)
         self.layout.addWidget(self.saveButton)
+        
 
 
     def setupParameterLayout(self)->QVBoxLayout:
@@ -80,12 +82,6 @@ class CreateBar(QWidget):
         layout.addWidget(self.calculationButton)
         return layout
     
-    def setCreateFunction(self,function)->None:
-        self.createButton.clicked.connect(function)
-
-    def setSaveFunction(self,function)->None:
-        self.saveButton.clicked.connect(function)
-
     def bind(self, item:Experiment):
         self.model = item
         print(item)
@@ -98,4 +94,16 @@ class CreateBar(QWidget):
         self.status.setText(item.status.value)
     
     def setCreateButtonListener(self, listener)->None:
-        self.createButton.clicked.connect(listener)      
+        self.createButton.clicked.connect(listener)
+
+    def setSaveButtonListener(self, listener)->None:
+        self.saveFunction = listener
+
+    def save(self):
+        self.model.description=self.descriptionEdit.toPlainText()
+        self.model.parameter.fullWidth = self.fullWidth.getValue()
+        self.model.parameter.fullModulation = self.fullModulation.getValue()
+        self.model.parameter.narrowWidth = self.narrowWidth.getValue()
+        self.model.parameter.narrowModulation = self.narrowModulation.getValue()
+        self.model.parameter.countMetering = self.numberRec.getValue()
+        self.saveFunction()
