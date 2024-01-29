@@ -70,7 +70,8 @@ class Parameter():
 
 class Experiment():
     def __init__(self):
-        self.__description = "LALALALAL"
+        self.__id = None
+        self.__description = ""
         self.__dateCreate = datetime.now()
         self.__lastChange = datetime.now()
         self.__status = ExperimentStatus.EDIT
@@ -177,7 +178,7 @@ class Metering():
 
 class Model():
     def __init__(self) -> None:
-        self._experementList=[["Experiment1","EDIT"],["Experiment2","EDIT"]]
+        self._experementList=set()
         self._selectedExperement = Experiment()
 
     def createNewExperement(self):
@@ -191,5 +192,7 @@ class Model():
         
     def getMeteringList(self):
         return [["Metering1", "EDIT"],["Metering2", "EDIT"],["Metering2", "EDIT"]]
-
+    
+    def putExperimentToList(self, experiment:Experiment) -> None:
+        self._experementList.add(experiment)
 
