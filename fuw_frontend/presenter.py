@@ -22,7 +22,7 @@ class Presenter():
         print("Clicked!")
 
     def saveExperement(self):
-        # save to BD or file 
+        # need save to BD or file 
         exp = self.__model.getSelectedExperement()
         if (exp.id==None):
             print("new exp")
