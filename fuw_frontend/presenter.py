@@ -29,6 +29,7 @@ class Presenter():
             exp.id = self.createId()
         l = self.__model.getExperementList()
         self.__model.putExperimentToList(self.__model.getSelectedExperement())
+        self.__ui.experementListLayout.setExperementList(self.__model.getExperementList())
         l = self.__model.getExperementList()
         print(len(l))
 
