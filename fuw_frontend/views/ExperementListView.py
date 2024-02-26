@@ -45,9 +45,14 @@ class ExperementListView(QVBoxLayout):
         self.addWidget(self.label)
         self.experementlist = QTableView(parent)
         self.addWidget(self.experementlist)        
-    
+        self.experementlist.doubleClicked.connect(self.selectExperement)
+
     def setExperementList(self, data):
         dataModel = ExperementListModel(data)
         print(type(dataModel))
         print(issubclass (ExperementListModel, QtCore.QAbstractTableModel))
         self.experementlist.setModel(dataModel)
+    
+    def selectExperement(self):
+        indexs = self.experementlist.selectionModel().selectedIndexes()
+        print(indexs)

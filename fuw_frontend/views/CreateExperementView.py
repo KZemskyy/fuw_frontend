@@ -98,6 +98,9 @@ class CreateBar(QWidget):
 
     def setSaveButtonListener(self, listener)->None:
         self.saveFunction = listener
+    
+    def setRecordButtonListener(self, listener)->None:
+        self.recordButton.clicked.connect(listener)
 
     def save(self):
         self.model.description=self.descriptionEdit.toPlainText()

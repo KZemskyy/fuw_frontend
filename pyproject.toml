@@ -8,6 +8,7 @@ authors = ["kzemskyy <kostya.zemskyy@h2i.sg>"]
 python = ">=3.10,<3.13"
 pyqt6 = "^6.5.3"
 PySide6 = "^6.6.0"
+numpy = "^1.26"
 
 
 [tool.poetry.dev-dependencies]

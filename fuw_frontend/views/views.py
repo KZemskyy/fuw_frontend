@@ -61,6 +61,9 @@ class Ui_MainWindow(object):
 
     def setExperement(self,experement:Experiment)->None:
         self.__createWidget.bind(experement)
+    
+    def setRecordButtonListener(self, listener)->None:
+        self.__createWidget.setRecordButtonListener(listener)
 
 
 

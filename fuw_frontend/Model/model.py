@@ -1,5 +1,6 @@
 from enum import Enum
 from datetime import datetime
+import numpy as np
 
 class ExperimentStatus(Enum):
     EDIT = "Edit"
@@ -67,6 +68,54 @@ class Parameter():
     def countMetering(self, countMetering:int):
         self.__countMetering = countMetering
 
+    
+class Metering():
+    def __init__(self,**kwargs) -> None:
+        self.__id = kwargs.get("id")
+        self.__description = kwargs.get("description")   
+        self.__status = MeteringStatus.EDIT
+
+    @property
+    def id(self)->int:
+        return self.__id
+    @id.setter
+    def id(self,id:int):
+        self.__id=id
+        
+    @property
+    def experimentId(self)->int:
+        return self.__experimentId
+    @experimentId.setter
+    def experimentId(self, id:int):
+        self.__experimentId = id
+
+    @property
+    def description(self)->str:
+        return self.__description
+    @description.setter
+    def description(self, description:str):
+        self.__description = description
+        
+    @property
+    def status(self)->MeteringStatus:
+        return self.__status
+    @status.setter
+    def status(self, status:MeteringStatus):
+        self.__status = status
+    
+    @property
+    def narrow(self)->np.array:
+        self.__narrow
+    @narrow.setter
+    def narrow(self, data:np.array):
+        self.__narrow = data
+    
+    @property
+    def full(self)->np.array:
+        self.__full
+    @full.setter
+    def full(self, data:np.array):
+        self.__full = data
 
 class Experiment():
     def __init__(self):
@@ -76,6 +125,7 @@ class Experiment():
         self.__lastChange = datetime.now()
         self.__status = ExperimentStatus.EDIT
         self.__parameter = Parameter()
+        self.__meterings = []
 
     @property
     def id(self)->int:
@@ -125,56 +175,12 @@ class Experiment():
         self.__parameter = parameter
 
     @property
-    def meterings(self)->[]:
+    def meterings(self)->list:
         return self.__meterings
-    @meterings.setter
-    def meterings(self,meterins:[]):
-        self.__meterings = meterins
+    
+    def setMetering(self, metering:Metering)->None:
+        self.__meterings.append(metering)
 
-class Metering():
-    def __init__(self) -> None:
-        pass
-
-    def __init__(self,id:int) -> None:
-        self.__init__()
-        self.id = id
-
-    def __init__(self, description:str) -> None:
-        self.__init__()
-        self.description = description
-
-    def __init__(self, id:int, description:str) -> None:
-        self.__init__()
-        self.description = description
-        self.id = id
-
-    @property
-    def id(self)->int:
-        return self.__id
-    @id.setter
-    def id(self,id:int):
-        self.__id=id
-        
-    @property
-    def experimentId(self)->int:
-        return self.__experimentId
-    @experimentId.setter
-    def experimentId(self, id:int):
-        self.__experimentId = id
-
-    @property
-    def description(self)->str:
-        return self.__description
-    @description.setter
-    def description(self, description:str):
-        self.__description = description
-        
-    @property
-    def status(self)->MeteringStatus:
-        return self.__status
-    @status.setter
-    def status(self, status:MeteringStatus):
-        self.__status = status
 
 class Model():
     def __init__(self) -> None:
