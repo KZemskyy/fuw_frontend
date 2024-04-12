@@ -1,14 +1,20 @@
 
 from PySide6.QtWidgets import QMainWindow, QFileDialog
-from .Model import Model
+from .Model import Model, Experiment, Metering
 from .views import Ui_MainWindow
 from operator import attrgetter
 import numpy as np
 import re
 import os
+import json
+from json import JSONEncoder
 
 FULL = r'^ao_.*dat$'
 NARROW = r'^au_.*dat$'
+
+class ExperimentEncoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
 
 class Presenter():
     def __init__(self, model:Model,MainWindow: QMainWindow) -> None:
@@ -22,7 +28,6 @@ class Presenter():
     def getUI(self):
         return self.__ui
 
-
     def newExperemenetClieckAction(self):
         self.__model.createNewExperement()
         self.__ui.setExperement(self.__model.getSelectedExperement())
@@ -34,11 +39,20 @@ class Presenter():
         if (exp.id==None):
             print("new exp")
             exp.id = self.createId()
+        self.saveToJson(exp)
         l = self.__model.getExperementList()
         self.__model.putExperimentToList(self.__model.getSelectedExperement())
         self.__ui.experementListLayout.setExperementList(self.__model.getExperementList())
         l = self.__model.getExperementList()
         print(len(l))
+    
+    def saveToJson(self,experiment:Experiment):
+        id = experiment.id
+        desc= experiment.description
+        filename = f"./save/{id}_{desc}.json"
+        with open(filename, "w") as file:
+            json.dump(experiment,file,indent=4, cls=ExperimentEncoder)
+
 
     def createId(self):
         l = self.__model.getExperementList()
@@ -57,21 +71,30 @@ class Presenter():
         # dialog.setLabelText("Load Data")
         files=dialog.getOpenFileNames(filter="Data (ao_*.dat au_*.dat)")
         print(f"files = {files}")
-        self.parserFileNames(files[0])
-        self.downLoadData(files[0][0])
-        pass
+        fileList = self.__parserFileNames(files[0])
+        print(fileList)
+        experent = self.__model._selectedExperement
+        print(experent.meterings)
+        for files in fileList:
+            metering = Metering()
+            metering.description = os.path.basename(files["full"])
+            metering.full = self.__downLoadData(files["full"])
+            metering.narrow = self.__downLoadData(files["narrow"])
+            print(f"m {metering}")
+            experent.meterings.append(metering)
+
     
-    def downLoadData(self, filename):
+    def __downLoadData(self, filename):
         print(filename)
         with open(filename) as file:
             data = np.loadtxt(file,usecols=(0, 1))
-        print(data)
+        return data
 
-    def parserFileNames(self, fileNames):
+    def __parserFileNames(self, fileNames):
         print(fileNames)
         full = list(filter(lambda f: True if re.search(FULL, os.path.basename(f)) else False, fileNames))
-        map()
-        print(f"full files - {full}")
-    
-    def  findNarrow(self,fileName, files):
-        pass
+        narrow = list(filter(lambda f: True if re.search(NARROW, os.path.basename(f)) else False, fileNames))
+        result = []
+        for fname in full:
+            result.append({"full":fname, "narrow":(list(filter(lambda f: True if (os.path.basename(f))[2:] == (os.path.basename(fname))[2:] else False, narrow)))[0]})
+        return result
