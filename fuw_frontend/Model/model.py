@@ -2,14 +2,14 @@ from enum import Enum
 from datetime import datetime
 import numpy as np
 
-class ExperimentStatus(Enum):
+class ExperimentStatus(str,Enum):
     EDIT = "Edit"
     PROCESING = "Procesing"
     CALCULATE = "Calculate"
     PARTLY_COMLETE = "partly_complete"
     COMLETE = "complete"
 
-class MeteringStatus(Enum):
+class MeteringStatus(str, Enum):
     EDIT = "Edit"
     PROCESING = "Procesing"
     CALCULATE = "Calculate"

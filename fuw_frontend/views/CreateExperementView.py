@@ -104,9 +104,9 @@ class CreateBar(QWidget):
 
     def save(self):
         self.model.description=self.descriptionEdit.toPlainText()
-        self.model.parameter.fullWidth = self.fullWidth.getValue()
-        self.model.parameter.fullModulation = self.fullModulation.getValue()
-        self.model.parameter.narrowWidth = self.narrowWidth.getValue()
-        self.model.parameter.narrowModulation = self.narrowModulation.getValue()
-        self.model.parameter.countMetering = self.numberRec.getValue()
+        self.model.parameter.fullWidth = float(self.fullWidth.getValue())
+        self.model.parameter.fullModulation = float(self.fullModulation.getValue())
+        self.model.parameter.narrowWidth = float(self.narrowWidth.getValue())
+        self.model.parameter.narrowModulation = float(self.narrowModulation.getValue())
+        self.model.parameter.countMetering = int(self.numberRec.getValue())
         self.saveFunction()

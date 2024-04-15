@@ -8,12 +8,20 @@ import re
 import os
 import json
 from json import JSONEncoder
+from datetime import date, datetime
 
 FULL = r'^ao_.*dat$'
 NARROW = r'^au_.*dat$'
 
 class ExperimentEncoder(JSONEncoder):
         def default(self, o):
+            print(f"o - {o}, type - {type(o)}")
+            if isinstance(o, (datetime, date)):
+                return o.isoformat()
+            if isinstance(o, float):
+                return format(o, ".2f")
+            if isinstance(o, np.ndarray):
+                return o.tolist()
             return o.__dict__
 
 class Presenter():
