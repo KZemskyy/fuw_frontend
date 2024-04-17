@@ -1,4 +1,4 @@
-
+import logging
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from .Model import Model, Experiment, Metering
 from .views import Ui_MainWindow
@@ -108,11 +108,15 @@ class Presenter():
             result.append({"full":fname, "narrow":(list(filter(lambda f: True if (os.path.basename(f))[2:] == (os.path.basename(fname))[2:] else False, narrow)))[0]})
         return result
 
-    def load(self): 
+    def load(self):
+        logging.info("load") 
         for fileName in os.listdir(SAVE):
+            logging.info(f"filename -{fileName}")
             if os.path.isfile(SAVE+fileName):
                 with open(SAVE+fileName) as file:
+                    logging.info("pars JSON")
                     j = json.load(file)
-                    print(j)
-                    # experement = Experiment(j)
-                    # print(experement)
+                    logging.debug(j)
+                    experement = Experiment(**j)
+                    logging.info(f"id {experement.id} desc {experement.description} create {experement.dateCreate} last {experement.lastChange} status {experement.status}")
+                    logging.info(f"parameter: id {experement.parameter.id} count {experement.parameter.countMetering} fullM {experement.parameter.fullModulation} fullW {experement.parameter.fullWidth} narrowM {experement.parameter.narrowModulation} narrowW {experement.parameter.narrowWidth}")

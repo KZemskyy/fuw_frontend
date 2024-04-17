@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from datetime import datetime
 import numpy as np
@@ -19,12 +20,12 @@ class MeteringStatus(str, Enum):
 
 class Parameter():
     def __init__(self, **kwards) -> None:
-        self.__id = kwards.get("id",None)
-        self.__fullWidth = kwards.get("fullWidth",0)
-        self.__fullModulation = kwards.get("fullModulation",0)
-        self.__narrowWidth = kwards.get("narrowWidth",0)
-        self.__narrowModulation = kwards.get("narrowModulation",0)
-        self.__countMetering = kwards.get("countMetering",0)
+        self.__id = kwards.get("_Parameter__id",None)
+        self.__fullWidth = kwards.get("_Parameter__fullWidth",0)
+        self.__fullModulation = kwards.get("_Parameter__fullModulation",0)
+        self.__narrowWidth = kwards.get("_Parameter__narrowWidth",0)
+        self.__narrowModulation = kwards.get("_Parameter__narrowModulation",0)
+        self.__countMetering = kwards.get("_Parameter__countMetering",0)
  
     @property
     def id(self)->int:
@@ -71,9 +72,15 @@ class Parameter():
     
 class Metering():
     def __init__(self,**kwargs) -> None:
-        self.__id = kwargs.get("id")
-        self.__description = kwargs.get("description")   
-        self.__status = MeteringStatus.EDIT
+        self.__id = kwargs.get("_Metering__id", None)
+        self.__description = kwargs.get("_Metering__description","")   
+        self.__status = kwargs.get("_Metering__status", MeteringStatus.EDIT)
+        f = kwargs.get("_Metering__full",None)
+        if f !=None:
+            self.full = np.array(f)
+        n = kwargs.get("_Metering__full",None)
+        if f !=None:
+            self.narrow = np.array(n)
 
     @property
     def id(self)->int:
@@ -120,13 +127,17 @@ class Metering():
 class Experiment():
     def __init__(self, **kwards):
         print(kwards)
-        self.__id = kwards["_Experiment__id"]
-        self.__description = kwards["_Experiment__description"]
-        self.__dateCreate = datetime.now()
-        self.__lastChange = datetime.now()
-        self.__status = ExperimentStatus.EDIT
-        self.__parameter = Parameter()
+        self.__id = int(kwards.get("_Experiment__id", None))
+        self.__description = kwards.get("_Experiment__description","")
+        create =kwards.get("_Experiment__dateCreate",None)
+        self.__dateCreate = datetime.strptime(create,"%Y-%m-%dT%H:%M:%S.%f") if create!=None else datetime.now()
+        last =kwards.get("_Experiment__dateCreate",None)
+        self.__lastChange = datetime.strptime(last,"%Y-%m-%dT%H:%M:%S.%f") if last!=None else datetime.now()
+        self.__status = kwards.get("_Experiment__status",ExperimentStatus.EDIT)
+        self.__parameter = Parameter(**kwards.get("_Experiment__parameter"))
         self.__meterings = []
+        # for m in kwards.get('_Experiment__meterings',[]):
+
 
     @property
     def id(self)->int:
@@ -186,7 +197,6 @@ class Experiment():
 class Model():
     def __init__(self) -> None:
         self._experementList=set()
-        self._selectedExperement = Experiment()
 
     def createNewExperement(self):
         self._selectedExperement = Experiment()
