@@ -118,9 +118,10 @@ class Metering():
         self.__full = data
 
 class Experiment():
-    def __init__(self):
-        self.__id = None
-        self.__description = ""
+    def __init__(self, **kwards):
+        print(kwards)
+        self.__id = kwards["_Experiment__id"]
+        self.__description = kwards["_Experiment__description"]
         self.__dateCreate = datetime.now()
         self.__lastChange = datetime.now()
         self.__status = ExperimentStatus.EDIT

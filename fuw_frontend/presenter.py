@@ -12,10 +12,10 @@ from datetime import date, datetime
 
 FULL = r'^ao_.*dat$'
 NARROW = r'^au_.*dat$'
+SAVE = "./save/"
 
 class ExperimentEncoder(JSONEncoder):
         def default(self, o):
-            print(f"o - {o}, type - {type(o)}")
             if isinstance(o, (datetime, date)):
                 return o.isoformat()
             if isinstance(o, float):
@@ -32,6 +32,7 @@ class Presenter():
         self.__ui.setCreateButtonListener(self.newExperemenetClieckAction)
         self.__ui.setSaveButtonListener(self.saveExperement)
         self.__ui.setRecordButtonListener(self.downLoad)
+        
         
     def getUI(self):
         return self.__ui
@@ -106,3 +107,12 @@ class Presenter():
         for fname in full:
             result.append({"full":fname, "narrow":(list(filter(lambda f: True if (os.path.basename(f))[2:] == (os.path.basename(fname))[2:] else False, narrow)))[0]})
         return result
+
+    def load(self): 
+        for fileName in os.listdir(SAVE):
+            if os.path.isfile(SAVE+fileName):
+                with open(SAVE+fileName) as file:
+                    j = json.load(file)
+                    print(j)
+                    # experement = Experiment(j)
+                    # print(experement)

@@ -10,6 +10,7 @@ class MyApp(QMainWindow):
         super(MyApp, self).__init__()
         self.__model = Model()
         self.__presenter = Presenter(self.__model, self)
+        self.__presenter.load()
 
         self.ui = self.__presenter.getUI()
         # self.ui.setupUi(self)    
