@@ -1,0 +1,16 @@
+{
+    "_Experiment__id": 2,
+    "_Experiment__description": "dhjkf",
+    "_Experiment__dateCreate": "2024-04-18T11:25:19.388408",
+    "_Experiment__lastChange": "2024-04-18T11:25:19.388408",
+    "_Experiment__status": "Edit",
+    "_Experiment__parameter": {
+        "_Parameter__id": null,
+        "_Parameter__fullWidth": 3.0,
+        "_Parameter__fullModulation": 2.0,
+        "_Parameter__narrowWidth": 1.0,
+        "_Parameter__narrowModulation": 2.0,
+        "_Parameter__countMetering": 2
+    },
+    "_Experiment__meterings": []
+}

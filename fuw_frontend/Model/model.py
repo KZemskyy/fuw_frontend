@@ -77,10 +77,12 @@ class Metering():
         self.__status = kwargs.get("_Metering__status", MeteringStatus.EDIT)
         f = kwargs.get("_Metering__full",None)
         if f !=None:
-            self.full = np.array(f)
-        n = kwargs.get("_Metering__full",None)
+            self.__full = np.array(f)
+        n = kwargs.get("_Metering__narrow",None)
         if f !=None:
-            self.narrow = np.array(n)
+            self.__narrow = np.array(n)
+        logging.info(f"init full {self.__full}")
+        logging.info(f"init narrow {self.__narrow}")
 
     @property
     def id(self)->int:
@@ -112,14 +114,14 @@ class Metering():
     
     @property
     def narrow(self)->np.array:
-        self.__narrow
+        return self.__narrow
     @narrow.setter
     def narrow(self, data:np.array):
         self.__narrow = data
     
     @property
     def full(self)->np.array:
-        self.__full
+        return self.__full
     @full.setter
     def full(self, data:np.array):
         self.__full = data
@@ -127,16 +129,17 @@ class Metering():
 class Experiment():
     def __init__(self, **kwards):
         print(kwards)
-        self.__id = int(kwards.get("_Experiment__id", None))
+        self.__id = kwards.get("_Experiment__id", None)
         self.__description = kwards.get("_Experiment__description","")
         create =kwards.get("_Experiment__dateCreate",None)
         self.__dateCreate = datetime.strptime(create,"%Y-%m-%dT%H:%M:%S.%f") if create!=None else datetime.now()
         last =kwards.get("_Experiment__dateCreate",None)
         self.__lastChange = datetime.strptime(last,"%Y-%m-%dT%H:%M:%S.%f") if last!=None else datetime.now()
         self.__status = kwards.get("_Experiment__status",ExperimentStatus.EDIT)
-        self.__parameter = Parameter(**kwards.get("_Experiment__parameter"))
+        self.__parameter = Parameter(**kwards.get("_Experiment__parameter",{}))
         self.__meterings = []
-        # for m in kwards.get('_Experiment__meterings',[]):
+        for m in kwards.get('_Experiment__meterings',[]):
+            self.__meterings.append(Metering(**m))
 
 
     @property

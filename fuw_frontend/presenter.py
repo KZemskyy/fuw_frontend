@@ -109,14 +109,16 @@ class Presenter():
         return result
 
     def load(self):
-        logging.info("load") 
+        logging.info("load data from ./save") 
         for fileName in os.listdir(SAVE):
-            logging.info(f"filename -{fileName}")
+            logging.info(f" load filename -{fileName}")
             if os.path.isfile(SAVE+fileName):
                 with open(SAVE+fileName) as file:
-                    logging.info("pars JSON")
                     j = json.load(file)
-                    logging.debug(j)
                     experement = Experiment(**j)
-                    logging.info(f"id {experement.id} desc {experement.description} create {experement.dateCreate} last {experement.lastChange} status {experement.status}")
-                    logging.info(f"parameter: id {experement.parameter.id} count {experement.parameter.countMetering} fullM {experement.parameter.fullModulation} fullW {experement.parameter.fullWidth} narrowM {experement.parameter.narrowModulation} narrowW {experement.parameter.narrowWidth}")
+                    self.__model.putExperimentToList(experement)
+                    # logging.info(f"id {experement.id} desc {experement.description} create {experement.dateCreate} last {experement.lastChange} status {experement.status}")
+                    # logging.info(f"parameter: id {experement.parameter.id} count {experement.parameter.countMetering} fullM {experement.parameter.fullModulation} fullW {experement.parameter.fullWidth} narrowM {experement.parameter.narrowModulation} narrowW {experement.parameter.narrowWidth}")
+                    # for m in experement.meterings:
+                    #     logging.info(f"metering id {m.id} description {m.description} status {m.status} full {m.full} narrow {m.narrow}")
+        self.__ui.experementListLayout.setExperementList(self.__model.getExperementList())

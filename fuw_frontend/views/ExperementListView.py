@@ -33,7 +33,7 @@ class ExperementListModel(QtCore.QAbstractTableModel):
         if column == 3:
             return experement.lastChange.strftime("%m/%d/%Y, %H:%M:%S")  
         if column == 4:
-            return experement.status.value  
+            return experement.status  
 
 class ExperementListView(QVBoxLayout):
     def __init__(self, parent: QWidget)->None:
