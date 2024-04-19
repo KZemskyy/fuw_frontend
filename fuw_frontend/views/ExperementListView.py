@@ -1,4 +1,5 @@
 
+import logging
 from PySide6.QtWidgets import QLabel, QTableView,  QVBoxLayout, QWidget
 from PySide6 import QtCore
 from PyQt6.QtCore import Qt
@@ -8,7 +9,7 @@ class ExperementListModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
         super(ExperementListModel, self).__init__()
         self._data=list(data)
-        print(f"len data {len(self._data)}")
+        logging.info(f"len data {len(self._data)}")
 
     def data(self, index, role):
         if role == Qt.ItemDataRole.DisplayRole:
@@ -33,7 +34,10 @@ class ExperementListModel(QtCore.QAbstractTableModel):
         if column == 3:
             return experement.lastChange.strftime("%m/%d/%Y, %H:%M:%S")  
         if column == 4:
-            return experement.status  
+            return experement.status
+        
+    def getExperement(self, index):
+        return self._data[index.row()]  
 
 class ExperementListView(QVBoxLayout):
     def __init__(self, parent: QWidget)->None:
@@ -41,18 +45,24 @@ class ExperementListView(QVBoxLayout):
         
         self.setContentsMargins(0, 0, 0, 0)
         self.label = QLabel(parent)
-        self.label.setText("Experement")
+        self.label.setText("Experements")
         self.addWidget(self.label)
         self.experementlist = QTableView(parent)
         self.addWidget(self.experementlist)        
         self.experementlist.doubleClicked.connect(self.selectExperement)
 
     def setExperementList(self, data):
-        dataModel = ExperementListModel(data)
-        print(type(dataModel))
-        print(issubclass (ExperementListModel, QtCore.QAbstractTableModel))
-        self.experementlist.setModel(dataModel)
+        self.__dataModel = ExperementListModel(data)
+        self.experementlist.setModel(self.__dataModel)
     
     def selectExperement(self):
         indexs = self.experementlist.selectionModel().selectedIndexes()
-        print(indexs)
+        logging.info(f" index - {indexs[0].row}")
+        value = self.__dataModel.getExperement(indexs[0])
+        logging.info(f"experement id = {value.id} desc = {value.description}")
+        logging.info(self.setSelectExperement)
+        self.__setSelectedExperiment(value)
+
+    def setSelectExperement(self, listener)->None:
+        self.__setSelectedExperiment = listener
+        

@@ -64,6 +64,9 @@ class Ui_MainWindow(object):
     
     def setRecordButtonListener(self, listener)->None:
         self.__createWidget.setRecordButtonListener(listener)
+    
+    def setSelectExperementInList(self, listener)->None:
+        self.experementListLayout.setSelectExperement(listener)
 
 
 

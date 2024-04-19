@@ -32,6 +32,7 @@ class Presenter():
         self.__ui.setCreateButtonListener(self.newExperemenetClieckAction)
         self.__ui.setSaveButtonListener(self.saveExperement)
         self.__ui.setRecordButtonListener(self.downLoad)
+        self.__ui.setSelectExperementInList(self.selectExperement)
         
         
     def getUI(self):
@@ -122,3 +123,9 @@ class Presenter():
                     # for m in experement.meterings:
                     #     logging.info(f"metering id {m.id} description {m.description} status {m.status} full {m.full} narrow {m.narrow}")
         self.__ui.experementListLayout.setExperementList(self.__model.getExperementList())
+
+    def selectExperement(self, experement:Experiment):
+        logging.info("selected Experement")
+        self.__model.selectExperement(experement)
+        self.__ui.setExperement(self.__model.getSelectedExperement())
+        logging.info("selected Experement")

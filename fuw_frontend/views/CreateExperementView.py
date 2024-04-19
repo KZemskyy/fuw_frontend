@@ -91,7 +91,7 @@ class CreateBar(QWidget):
         self.narrowWidth.setText(item.parameter.narrowWidth)
         self.narrowModulation.setText(item.parameter.narrowModulation)
         self.numberRec.setText(item.parameter.countMetering)
-        self.status.setText(item.status.value)
+        self.status.setText(item.status)
     
     def setCreateButtonListener(self, listener)->None:
         self.createButton.clicked.connect(listener)

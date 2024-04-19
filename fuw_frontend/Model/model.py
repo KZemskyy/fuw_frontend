@@ -203,6 +203,9 @@ class Model():
 
     def createNewExperement(self):
         self._selectedExperement = Experiment()
+    
+    def selectExperement(self, experement:Experiment)->None:
+        self._selectedExperement = experement
 
     def getSelectedExperement(self)->Experiment:
         return self._selectedExperement
