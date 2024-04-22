@@ -22,9 +22,9 @@ class Parameter():
     def __init__(self, **kwards) -> None:
         self.__id = kwards.get("_Parameter__id",None)
         self.__fullWidth = kwards.get("_Parameter__fullWidth",0)
-        self.__fullModulation = kwards.get("_Parameter__fullModulation",0)
+        self.__fullModulation = kwards.get("_Parameter__fullModulation", 0.32)
         self.__narrowWidth = kwards.get("_Parameter__narrowWidth",0)
-        self.__narrowModulation = kwards.get("_Parameter__narrowModulation",0)
+        self.__narrowModulation = kwards.get("_Parameter__narrowModulation", 0.08)
         self.__countMetering = kwards.get("_Parameter__countMetering",0)
  
     @property
@@ -68,6 +68,29 @@ class Parameter():
     @countMetering.setter
     def countMetering(self, countMetering:int):
         self.__countMetering = countMetering
+
+class Result():
+    def __init__(self, **kwards) -> None:
+        self.full_a = kwards.get("full_a", None)
+        self.full_b = kwards.get("full_b", None)
+        self.full_c = kwards.get("full_c", None)
+        self.full_d = kwards.get("full_d", None)
+        self.full_q = kwards.get("full_q", None)
+        self.full_k = kwards.get("full_k", None)
+        self.narrow_a = kwards.get("narrow_a", None)
+        self.narrow_b = kwards.get("narrow_b", None)
+        self.narrow_d = kwards.get("narrow_d", None)
+        self.narrow_q = kwards.get("narrow_q", None)
+        self.narrow_w = kwards.get("narrow_w", None)
+        self.narrow_v = kwards.get("narrow_v", None)
+        self.narrow_k = kwards.get("narrow_k", None)
+        pass
+    
+    def getFullValue(self)->list:
+        return [self.full_a, self.full_b, self.full_c, self.full_d, self.full_q,self.full_k]
+
+    def getNarrowValue(self)->list:
+        return [self.narrow_a, self.narrow_b, self.narrow_d, self.narrow_q, self.narrow_w, self.narrow_v, self.narrow_k]
 
     
 class Metering():
@@ -125,6 +148,14 @@ class Metering():
     @full.setter
     def full(self, data:np.array):
         self.__full = data
+
+    @property
+    def result(self)->Result:
+        return self.__result
+    @result.setter
+    def result(self, data:Result)->None:
+        self.__result=data
+        self.__status = MeteringStatus.CALCULATE
 
 class Experiment():
     def __init__(self, **kwards):

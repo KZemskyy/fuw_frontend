@@ -2,6 +2,7 @@ import logging
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from .Model import Model, Experiment, Metering
 from .views import Ui_MainWindow
+from .calculation import SpectrCalculation
 from operator import attrgetter
 import numpy as np
 import re
@@ -27,6 +28,7 @@ class ExperimentEncoder(JSONEncoder):
 class Presenter():
     def __init__(self, model:Model,MainWindow: QMainWindow) -> None:
         self.__model = model
+        self.__sectrCalculation = SpectrCalculation
         self.__ui = Ui_MainWindow()
         self.__ui.setupUi(MainWindow)    
         self.__ui.setCreateButtonListener(self.newExperemenetClieckAction)
@@ -129,3 +131,7 @@ class Presenter():
         self.__model.selectExperement(experement)
         self.__ui.setExperement(self.__model.getSelectedExperement())
         logging.info("selected Experement")
+    
+    def calculation(self, experement:Experiment):
+        for metering in experement.meterings:
+            self.__sectrCalculation.culculate(experement.parameter, metering)
