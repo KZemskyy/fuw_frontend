@@ -102,6 +102,9 @@ class CreateBar(QWidget):
     def setRecordButtonListener(self, listener)->None:
         self.recordButton.clicked.connect(listener)
 
+    def setCalculationButtonListener(self, listener)->None:
+        self.calculationButton.clicked.connect(listener)
+
     def save(self):
         self.model.description=self.descriptionEdit.toPlainText()
         self.model.parameter.fullWidth = float(self.fullWidth.getValue())

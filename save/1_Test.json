@@ -3,20 +3,20 @@
     "_Experiment__description": "Test",
     "_Experiment__dateCreate": "2024-04-17T14:57:00.193017",
     "_Experiment__lastChange": "2024-04-17T14:57:00.193017",
-    "_Experiment__status": "Edit",
+    "_Experiment__status": "Calculate",
     "_Experiment__parameter": {
         "_Parameter__id": null,
         "_Parameter__fullWidth": 1.0,
-        "_Parameter__fullModulation": 2.0,
+        "_Parameter__fullModulation": 0.32,
         "_Parameter__narrowWidth": 1.0,
-        "_Parameter__narrowModulation": 2.0,
+        "_Parameter__narrowModulation": 0.08,
         "_Parameter__countMetering": 2
     },
     "_Experiment__meterings": [
         {
             "_Metering__id": null,
             "_Metering__description": "ao_2.3.dat",
-            "_Metering__status": "Edit",
+            "_Metering__status": "Calculate",
             "_Metering__full": [
                 [
                     -9.951494,
@@ -4033,7 +4033,7 @@
         {
             "_Metering__id": null,
             "_Metering__description": "ao_3.dat",
-            "_Metering__status": "Edit",
+            "_Metering__status": "Calculate",
             "_Metering__full": [
                 [
                     -9.950994,

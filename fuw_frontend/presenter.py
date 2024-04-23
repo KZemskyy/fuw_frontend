@@ -1,6 +1,6 @@
 import logging
 from PySide6.QtWidgets import QMainWindow, QFileDialog
-from .Model import Model, Experiment, Metering
+from .Model import Model, Experiment, Metering, ExperimentStatus, MeteringStatus
 from .views import Ui_MainWindow
 from .calculation import SpectrCalculation
 from operator import attrgetter
@@ -28,12 +28,13 @@ class ExperimentEncoder(JSONEncoder):
 class Presenter():
     def __init__(self, model:Model,MainWindow: QMainWindow) -> None:
         self.__model = model
-        self.__sectrCalculation = SpectrCalculation
+        self.__spectrCalculation = SpectrCalculation()
         self.__ui = Ui_MainWindow()
         self.__ui.setupUi(MainWindow)    
         self.__ui.setCreateButtonListener(self.newExperemenetClieckAction)
         self.__ui.setSaveButtonListener(self.saveExperement)
         self.__ui.setRecordButtonListener(self.downLoad)
+        self.__ui.setCalculationButtonListener(self.calculation)
         self.__ui.setSelectExperementInList(self.selectExperement)
         
         
@@ -132,6 +133,12 @@ class Presenter():
         self.__ui.setExperement(self.__model.getSelectedExperement())
         logging.info("selected Experement")
     
-    def calculation(self, experement:Experiment):
+    def calculation(self):
+        experement = self.__model.getSelectedExperement()
+        logging.info(f"experement - {experement.meterings}")
+        logging.info(f"__spectrCalculation {self.__spectrCalculation.fullModulation}")
         for metering in experement.meterings:
-            self.__sectrCalculation.culculate(experement.parameter, metering)
+            logging.info(f"metering type {type(metering)}")
+            self.__spectrCalculation.culculate(experement.parameter, metering)
+            metering.status = MeteringStatus.CALCULATE
+        experement.status = ExperimentStatus.CALCULATE

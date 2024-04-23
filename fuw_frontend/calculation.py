@@ -1,10 +1,13 @@
 from math import exp
 import numpy as np
+
+from pylab import * 
 import logging
 from scipy.optimize import curve_fit
-from .Model import Parameter, Metering, Result
+from scipy import integrate
+from .Model import Parameter, Metering, Result, Square
 
-class SpectrCalculation:
+class SpectrCalculation():
     def __init__(self) -> None:
         self.c = 0
         self.iter =0
@@ -14,30 +17,149 @@ class SpectrCalculation:
         self.narrowCoefficients = np.array([1.5, 0.3, 1, 0.5,0.3,0.6,0]) # Coefficients in narrow by default
         pass 
         
-    def __func1(self, x, a, b, c1, d, q, k):
-        return a*(exp(-2*(x-b+self.fullModulation)**2/c1**2)-exp(-2*(x-b-self.fullModulation)**2/c1**2)) + d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
+    def __fullFunc(self, x, a, b, c1, d, q, k):
+        return a*(exp(-2*(x-b+self.fullModulation)**2/c1**2)-exp(-2*(x-b-self.fullModulation)**2/c1**2)) \
+            + d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
+    
+    def __fullFuncPart1(self, x, a, b, c1):
+        return a*(exp(-2*(x-b+self.fullModulation)**2/c1**2)-exp(-2*(x-b-self.fullModulation)**2/c1**2))
+    
+    def __fullFuncPart2(self, x, b, d, q, k):
+        return d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
 
-    def __func2(self, x, a, b, d, q, w, v, k):
-        logging.info(f"c = {self.c}")
-        logging.info(f"interation =  {self.iter}")
+    def __narrowFunc(self, x, a, b, d, q, w, v, k):
+        logging.debug(f"c = {self.c} a = {a}, b = {b}, d = {d}, q = {q}, w = {w}, v = {v}, k = {k}")
+        logging.debug(f"interation =  {self.iter}")
         self.iter+=1
-        return a*(exp(-2*(x-b+self.narrowCoefficients)**2/self.c**2)-exp(-2*(x-b-self.narrowCoefficients)**2/self.c**2)) + d*(q**2)*(1/(q**2 + (x-b+self.narrowCoefficients)**2) - 1/(q**2+(x-b-self.narrowCoefficients)**2)) \
-            +w*v*(1/(v**2 + (x-b+self.narrowCoefficients)**2) - 1/(v**2+(x-b-self.narrowCoefficients)**2))- k
+        return a*(exp(-2*(x-b+self.narrowModulation)**2/self.c**2)-exp(-2*(x-b-self.narrowModulation)**2/self.c**2)) \
+            + d*(exp(-2*(x-b+self.narrowModulation)**2/q**2)-exp(-2*(x-b-self.narrowModulation)**2/q**2)) \
+                +w*v*(1/(v**2 + (x-b+self.narrowModulation)**2) - 1/(v**2+(x-b-self.narrowModulation)**2))- k
+    
+    def __narrowFuncPart1(self, x, a, b):
+        return a*(exp(-2*(x-b+self.narrowModulation)**2/self.c**2)-exp(-2*(x-b-self.narrowModulation)**2/self.c**2))
+    
+    def __narrowFuncPart2(self, x,  b, d, q):
+        return d*(exp(-2*(x-b+self.narrowModulation)**2/q**2)-exp(-2*(x-b-self.narrowModulation)**2/q**2)) 
+    
+    def __narrowFuncPart3(self, x, b, w, v, k):
+        return w*v*(1/(v**2 + (x-b+self.narrowModulation)**2) - 1/(v**2+(x-b-self.narrowModulation)**2))- k
+        
+        # y1 = a*(exp(-2*(x-b+self.narrowModulation)**2/self.c**2)-exp(-2*(x-b-self.narrowModulation)**2/self.c**2))
+        # + d*(q**2)*(1/(q**2 + (x-b+self.narrowModulation)**2) - 1/(q**2+(x-b-self.narrowModulation)**2))
+        # +w*v*(1/(v**2 + (x-b+self.narrowModulation)**2) - 1/(v**2+(x-b-self.narrowModulation)**2))- k
+    
 
     def culculate(self, parameter:Parameter, metering:Metering)->Metering:
         self.fullModulation = parameter.fullModulation
         self.narrowModulation = parameter.narrowModulation
-        x = metering.full[:,0]
-        y = metering.full[:,1]
-        popt, pcov = curve_fit(self.__func1, x, y, self.fullCoefficients)
+        
+        popt = self.__calculateFull(metering.full)
+        
         self.c = popt[2]
         a_min = 0.9*popt[0]
         min = 0.5*popt[3]
-        x1 = metering.narrow[:,0]
-        y1 = metering.narrow[:,1]
-        popt1, pcov1 = curve_fit(self.__func2, x1, y1, self.narrowCoefficients, bounds=((a_min, -np.inf, min, -np.inf, min, -np.inf, -np.inf),(np.inf, np.inf, np.inf, 2, np.inf, 2, np.inf)))
+        popt1 = self.__calculateNarrow(metering.narrow,a_min,min)
+
         result = Result(full_a = popt[0],full_b = popt[1],full_c = popt[2], full_d = popt[3],full_q = popt[4],full_k = popt[5],narrow_a = popt1[0],
                        narrow_b = popt1[1],narrow_d = popt1[2],narrow_q = popt1[3],narrow_w = popt1[4],narrow_v = popt1[5],narrow_k = popt1[6])
+
+        fs = self.__squareFull(metering.full, result)
+        fs1 = self.__squareFullPart1(metering.full, result)
+        fs2 = self.__squareFullPart2(metering.full, result)
+        fd = self.__squareFullDef(metering.full)
+        ns = self.__squareNarrow(metering.narrow, result)
+        ns1 = self.__squareNarrowPart1(metering.narrow, result)
+        ns2 = self.__squareNarrowPart2(metering.narrow, result)
+        ns3 = self.__squareNarrowPart3(metering.narrow, result)
+        nd = self.__squareNarrowDef(metering.narrow)
+        logging.info(f"s - {ns[0]}  s1+s2+s3 - {ns1[0]+ns2[0]+ns3[0]}")
+        result.squarFull = Square(s=fs, s1=fs1, s2=fs2, default=fd)
+        result.squarNarrow = Square(s=ns, s1=ns1, s2=ns2, s3=ns3, default=nd)
         metering.result = result
         return metering
- 
+    
+    def __calculateFull(self, full)->tuple:
+        x = full[:,0]
+        y = full[:,1]
+        popt, pcov = curve_fit(self.__fullFunc, x, y, self.fullCoefficients)
+        return popt
+    
+    def __calculateNarrow(self , narrow, a_min, min)->tuple:
+        x = narrow[:,0]
+        y = narrow[:,1]
+        self.narrowCoefficients[0] = a_min
+        self.narrowCoefficients[2] = min
+        popt, pcov = curve_fit(self.__narrowFunc, x, y, self.narrowCoefficients, bounds=((a_min, 0, 0, -np.inf, 0, -np.inf, -np.inf),
+                                                                                        (np.inf, np.inf, np.inf, 2, np.inf, 2, np.inf)))
+        return popt
+
+    def __squareFullPart1(self, full, parameters:Result):
+        X = full[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__fullFuncPart1,x_min,x_max,args=(parameters.full_a, parameters.full_b, parameters.full_c))
+        logging.info(f"full part1 {s}")
+        return s
+
+    def __squareFullPart2(self, full, parameters:Result):
+        X = full[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__fullFuncPart2,x_min,x_max,args=(parameters.full_b, parameters.full_d, parameters.full_q, parameters.full_k))
+        logging.info(f"full part2 {s}")
+        return s
+
+
+    def __squareFull(self, full, parameters:Result):
+        X = full[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__fullFunc,x_min,x_max,args=(parameters.full_a,parameters.full_b, parameters.full_c, parameters.full_d, parameters.full_q, parameters.full_k))
+        logging.info(f"full {s}")
+        return s
+    
+    def __squareFullDef(self,full):
+        X = full[:,0]
+        y= full[:,1]
+        s1= np.trapz(y,x=X)
+        logging.info(f"full def {s1}")
+        return s1
+    
+    def __squareNarrowPart1(self, narrow, parameters:Result):
+        X = narrow[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__narrowFuncPart1,x_min,x_max,args=(parameters.narrow_a, parameters.narrow_b))
+        logging.info(f"narrow part1 {s}")
+        return s
+    
+    def __squareNarrowPart2(self, narrow, parameters:Result):
+        X = narrow[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__narrowFuncPart2, x_min, x_max, args=(parameters.narrow_b, parameters.narrow_d, parameters.narrow_q))
+        logging.info(f"narrow part2 {s}")
+        return s
+
+    def __squareNarrowPart3(self, narrow, parameters:Result):
+        X = narrow[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__narrowFuncPart3, x_min, x_max, args=(parameters.narrow_b, parameters.narrow_w, parameters.narrow_v, parameters.narrow_k))
+        logging.info(f"narrow part3 {s}")
+        return s
+    
+    def __squareNarrow(self, narrow, parameters:Result):
+        X = narrow[:,0]
+        x_min = np.min(X)
+        x_max = np.max(X)
+        s = integrate.quad(self.__narrowFunc, x_min, x_max, args=(parameters.narrow_a, parameters.narrow_b, parameters.narrow_d, parameters.narrow_q, parameters.narrow_w, parameters.narrow_v, parameters.narrow_k))
+        logging.info(f"narrow {s}")
+        return s
+    
+    def __squareNarrowDef(self, narrow):
+        X = narrow[:,0]
+        y= narrow[:,1]
+        s= np.trapz(y,x=X)
+        logging.info(f"narrow def {s}")
+        return s

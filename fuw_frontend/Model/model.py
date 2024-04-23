@@ -69,6 +69,19 @@ class Parameter():
     def countMetering(self, countMetering:int):
         self.__countMetering = countMetering
 
+class Square():
+    def __init__(self, **kwards) -> None:
+        self.s= kwards.get("s", None)
+        self.s1= kwards.get("s1", None)
+        self.s2= kwards.get("s2", None)
+        self.s3= kwards.get("s3", None)
+        self.default= kwards.get("default", None)
+    
+    def toString(self)->str:
+        return f"S - {self.s} S1 - {self.s1} S2 - {self.s2} S3 - {self.s3} Def -{self.default}"
+    
+    
+
 class Result():
     def __init__(self, **kwards) -> None:
         self.full_a = kwards.get("full_a", None)
@@ -91,6 +104,20 @@ class Result():
 
     def getNarrowValue(self)->list:
         return [self.narrow_a, self.narrow_b, self.narrow_d, self.narrow_q, self.narrow_w, self.narrow_v, self.narrow_k]
+    
+    @property
+    def squarFull(self)->Square:
+        return self._squarFull
+    @squarFull.setter
+    def squarFull(self, s:Square):
+        self._squarFull = s
+
+    @property
+    def squarNarrow(self)->Square:
+        return self._squarNarrow
+    @squarNarrow.setter
+    def squarNarrow(self, s:Square):
+        self._squarNarrow = s
 
     
 class Metering():
