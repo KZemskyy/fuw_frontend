@@ -14,3 +14,7 @@ class LineEdit(QHBoxLayout):
     
     def getValue(self):
         return self.input.text()
+    
+    def setEnabled(self, enable):
+        self.input.setEnabled(enable)
+

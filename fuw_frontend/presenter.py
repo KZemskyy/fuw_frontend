@@ -79,22 +79,22 @@ class Presenter():
         return max+1
     
     def downLoad(self):
-        print("downLoad")
+        logging.info("downLoad")
         dialog = QFileDialog(self.__ui.centralwidget)
         # dialog.setLabelText("Load Data")
-        files=dialog.getOpenFileNames(filter="Data (ao_*.dat au_*.dat)")
-        print(f"files = {files}")
+        files=dialog.getOpenFileNames(filter="Data (*.dat)")
+        logging.info(f"files = {files}")
         fileList = self.__parserFileNames(files[0])
-        print(fileList)
+        logging.info(f"fileList - {fileList}")
         experent = self.__model._selectedExperement
-        print(experent.meterings)
+        logging.info(experent.meterings)
         for files in fileList:
-            metering = Metering()
-            metering.description = os.path.basename(files["full"])
+            metering = Metering(_Metering__description=f"{os.path.basename(files['full'])} {os.path.basename(files['narrow'])}")
             metering.full = self.__downLoadData(files["full"])
             metering.narrow = self.__downLoadData(files["narrow"])
-            print(f"m {metering}")
+            logging.info(f"m {metering}")
             experent.meterings.append(metering)
+        self.__ui.setExperement(self.__model.getSelectedExperement())
 
     
     def __downLoadData(self, filename):
@@ -104,12 +104,14 @@ class Presenter():
         return data
 
     def __parserFileNames(self, fileNames):
-        print(fileNames)
-        full = list(filter(lambda f: True if re.search(FULL, os.path.basename(f)) else False, fileNames))
-        narrow = list(filter(lambda f: True if re.search(NARROW, os.path.basename(f)) else False, fileNames))
+        logging.info(f"__parserFileNames")
+        full = list(filter(lambda f: True if int(os.path.splitext(os.path.basename(f))[0])%2 == 1 else False, fileNames))
+        narrow = list(filter(lambda f: True if int(os.path.splitext(os.path.basename(f))[0])%2 == 0 else False, fileNames))
+        logging.info(f"fulll =P {full}")
+        logging.info(f"narrow =P {narrow}")
         result = []
-        for fname in full:
-            result.append({"full":fname, "narrow":(list(filter(lambda f: True if (os.path.basename(f))[2:] == (os.path.basename(fname))[2:] else False, narrow)))[0]})
+        for i in range(min(len(full), len(narrow))):
+            result.append({"full":full[i], "narrow":narrow[i]})
         return result
 
     def load(self):

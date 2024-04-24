@@ -140,7 +140,8 @@ class Metering():
         if n !=None:
             self.__narrow = np.array(n)
         r = kwargs.get("_Metering__result", None)
-        self.__result = Result(**r)        
+        if r !=None:
+            self.__result = Result(**r)        
 
     @property
     def id(self)->int:
