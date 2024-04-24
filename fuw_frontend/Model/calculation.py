@@ -5,7 +5,7 @@ from pylab import *
 import logging
 from scipy.optimize import curve_fit
 from scipy import integrate
-from .Model import Parameter, Metering, Result, Square
+from . import Parameter, Metering, Result, Square
 
 class SpectrCalculation():
     def __init__(self) -> None:
@@ -17,7 +17,7 @@ class SpectrCalculation():
         self.narrowCoefficients = np.array([1.5, 0.3, 1, 0.5,0.3,0.6,0]) # Coefficients in narrow by default
         pass 
         
-    def __fullFunc(self, x, a, b, c1, d, q, k):
+    def fullFunc(self, x, a, b, c1, d, q, k):
         return a*(exp(-2*(x-b+self.fullModulation)**2/c1**2)-exp(-2*(x-b-self.fullModulation)**2/c1**2)) \
             + d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
     
@@ -27,7 +27,7 @@ class SpectrCalculation():
     def __fullFuncPart2(self, x, b, d, q, k):
         return d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
 
-    def __narrowFunc(self, x, a, b, d, q, w, v, k):
+    def narrowFunc(self, x, a, b, d, q, w, v, k):
         logging.debug(f"c = {self.c} a = {a}, b = {b}, d = {d}, q = {q}, w = {w}, v = {v}, k = {k}")
         logging.debug(f"interation =  {self.iter}")
         self.iter+=1
@@ -81,7 +81,7 @@ class SpectrCalculation():
     def __calculateFull(self, full)->tuple:
         x = full[:,0]
         y = full[:,1]
-        popt, pcov = curve_fit(self.__fullFunc, x, y, self.fullCoefficients)
+        popt, pcov = curve_fit(self.fullFunc, x, y, self.fullCoefficients)
         return popt
     
     def __calculateNarrow(self , narrow, a_min, min)->tuple:
@@ -89,7 +89,7 @@ class SpectrCalculation():
         y = narrow[:,1]
         self.narrowCoefficients[0] = a_min
         self.narrowCoefficients[2] = min
-        popt, pcov = curve_fit(self.__narrowFunc, x, y, self.narrowCoefficients, bounds=((a_min, 0, 0, -np.inf, 0, -np.inf, -np.inf),
+        popt, pcov = curve_fit(self.narrowFunc, x, y, self.narrowCoefficients, bounds=((a_min, 0, 0, -np.inf, 0, -np.inf, -np.inf),
                                                                                         (np.inf, np.inf, np.inf, 2, np.inf, 2, np.inf)))
         return popt
 
@@ -114,7 +114,7 @@ class SpectrCalculation():
         X = full[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__fullFunc,x_min,x_max,args=(parameters.full_a,parameters.full_b, parameters.full_c, parameters.full_d, parameters.full_q, parameters.full_k))
+        s = integrate.quad(self.fullFunc,x_min,x_max,args=(parameters.full_a,parameters.full_b, parameters.full_c, parameters.full_d, parameters.full_q, parameters.full_k))
         logging.info(f"full {s}")
         return s
     
@@ -153,7 +153,7 @@ class SpectrCalculation():
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__narrowFunc, x_min, x_max, args=(parameters.narrow_a, parameters.narrow_b, parameters.narrow_d, parameters.narrow_q, parameters.narrow_w, parameters.narrow_v, parameters.narrow_k))
+        s = integrate.quad(self.narrowFunc, x_min, x_max, args=(parameters.narrow_a, parameters.narrow_b, parameters.narrow_d, parameters.narrow_q, parameters.narrow_w, parameters.narrow_v, parameters.narrow_k))
         logging.info(f"narrow {s}")
         return s
     

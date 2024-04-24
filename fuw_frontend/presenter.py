@@ -2,7 +2,7 @@ import logging
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from .Model import Model, Experiment, Metering, ExperimentStatus, MeteringStatus
 from .views import Ui_MainWindow
-from .calculation import SpectrCalculation
+from .Model.calculation import SpectrCalculation
 from operator import attrgetter
 import numpy as np
 import re

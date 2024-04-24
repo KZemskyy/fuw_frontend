@@ -78,7 +78,10 @@ class Square():
         self.default= kwards.get("default", None)
     
     def toString(self)->str:
-        return f"S - {self.s} S1 - {self.s1} S2 - {self.s2} S3 - {self.s3} Def -{self.default}"
+        if self.s3 == None:
+            return f"S {self.s[0]:.5f} S1 {self.s1[0]:.5f} S2 {self.s2[0]:.5f} Def {self.default:.5f}"
+        else:
+            return f"S {self.s[0]:.5f} S1 {self.s1[0]:.5f} S2 {self.s2[0]:.5f} S3 {self.s3[0]:.5f} Def {self.default:.5f}"
     
     
 
