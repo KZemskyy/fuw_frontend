@@ -97,7 +97,13 @@ class Result():
         self.narrow_w = kwards.get("narrow_w", None)
         self.narrow_v = kwards.get("narrow_v", None)
         self.narrow_k = kwards.get("narrow_k", None)
-        pass
+        sf = kwards.get("_squarFull", None)
+        if sf != None:
+            self._squarFull = Square(**sf)
+        sn = kwards.get("_squarNarrow", None)
+        if sn != None:
+            self.squarNarrow = Square(**sn)
+        
     
     def getFullValue(self)->list:
         return [self.full_a, self.full_b, self.full_c, self.full_d, self.full_q,self.full_k]
@@ -118,21 +124,20 @@ class Result():
     @squarNarrow.setter
     def squarNarrow(self, s:Square):
         self._squarNarrow = s
-
     
 class Metering():
     def __init__(self,**kwargs) -> None:
         self.__id = kwargs.get("_Metering__id", None)
         self.__description = kwargs.get("_Metering__description","")   
         self.__status = kwargs.get("_Metering__status", MeteringStatus.EDIT)
-        f = kwargs.get("_Metering__full",None)
+        f = kwargs.get("_Metering__full", None)
         if f !=None:
             self.__full = np.array(f)
-        n = kwargs.get("_Metering__narrow",None)
-        if f !=None:
+        n = kwargs.get("_Metering__narrow", None)
+        if n !=None:
             self.__narrow = np.array(n)
-        logging.info(f"init full {self.__full}")
-        logging.info(f"init narrow {self.__narrow}")
+        r = kwargs.get("_Metering__result", None)
+        self.__result = Result(**r)        
 
     @property
     def id(self)->int:
