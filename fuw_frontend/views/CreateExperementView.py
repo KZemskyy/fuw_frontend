@@ -3,7 +3,7 @@ from PySide6.QtCore import  QRect
 
 from PySide6.QtWidgets import  QHBoxLayout, QLabel,  QPushButton, QTextEdit, QVBoxLayout, QWidget
 from .utils import LineEdit
-from ..Model import Experiment
+from ..Model import Experiment, ExperimentStatus
 
 class CreateBar(QWidget):
     def __init__(self, parent: QWidget ) -> None:
@@ -104,6 +104,7 @@ class CreateBar(QWidget):
         self.narrowModulation.setText(item.parameter.narrowModulation)
         self.numberRec.setText(item.parameter.countMetering)
         self.status.setText(item.status.value)
+        self.setActiveComponent(item)
     
     def setCreateButtonListener(self, listener)->None:
         self._createExperementFunc = listener
@@ -143,4 +144,14 @@ class CreateBar(QWidget):
         self.narrowLabel.setEnabled(enable)
         self.narrowModulation.setEnabled(enable)
         self.recordButton.setEnabled(enable)
-        self.saveButton.setEnabled(enable)   
+        self.saveButton.setEnabled(enable)
+
+    def setActiveComponent(self, item:Experiment):
+        if item.status == ExperimentStatus.EDIT:
+            self.enabled(True)
+        else:
+            self.enabled(False)
+        if item.status!=ExperimentStatus.CALCULATE and len(item.meterings)>0:
+            self.calculationButton.setEnabled(True)
+        else:
+            self.calculationButton.setEnabled(False)

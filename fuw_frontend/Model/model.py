@@ -203,6 +203,11 @@ class Experiment():
         last =kwards.get("_Experiment__dateCreate",None)
         self.__lastChange = datetime.strptime(last,"%Y-%m-%dT%H:%M:%S.%f") if last!=None else datetime.now()
         self.__status = kwards.get("_Experiment__status",ExperimentStatus.EDIT)
+        if type(self.__status)==str:
+            if self.__status == "Edit":
+                self.__status = ExperimentStatus.EDIT
+            elif self.__status == "Calculate":
+                self.__status = ExperimentStatus.CALCULATE
         self.__parameter = Parameter(**kwards.get("_Experiment__parameter",{}))
         self.__meterings = []
         for m in kwards.get('_Experiment__meterings',[]):
