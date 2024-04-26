@@ -151,7 +151,7 @@ class CreateBar(QWidget):
             self.enabled(True)
         else:
             self.enabled(False)
-        if item.status!=ExperimentStatus.CALCULATE and len(item.meterings)>0:
+        if len(item.meterings)>0:
             self.calculationButton.setEnabled(True)
         else:
             self.calculationButton.setEnabled(False)

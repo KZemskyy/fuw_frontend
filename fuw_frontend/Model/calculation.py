@@ -21,11 +21,14 @@ class SpectrCalculation():
         return a*(exp(-2*(x-b+self.fullModulation)**2/c1**2)-exp(-2*(x-b-self.fullModulation)**2/c1**2)) \
             + d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
     
-    def __fullFuncPart1(self, x, a, b, c1):
-        return a*(exp(-2*(x-b+self.fullModulation)**2/c1**2)-exp(-2*(x-b-self.fullModulation)**2/c1**2))
+    def __fullFunc(self, x, a, c1,d,q):
+        return a*(exp(-2*(x)**2/c1**2))+d*q**2/(x**2 +q**2)
+
+    def __fullFuncPart1(self, x, a, c1):
+        return a*(exp(-2*(x**2/c1**2)))
     
-    def __fullFuncPart2(self, x, b, d, q, k):
-        return d*q**2*(1/(q**2 + (x-b+self.fullModulation)**2) - 1/(q**2+(x-b-self.fullModulation)**2)) - k
+    def __fullFuncPart2(self, x, d, q):
+        return d*q**2/(x**2 +q**2)
 
     def narrowFunc(self, x, a, b, d, q, w, v, k):
         logging.debug(f"c = {self.c} a = {a}, b = {b}, d = {d}, q = {q}, w = {w}, v = {v}, k = {k}")
@@ -35,14 +38,17 @@ class SpectrCalculation():
             + d*(exp(-2*(x-b+self.narrowModulation)**2/q**2)-exp(-2*(x-b-self.narrowModulation)**2/q**2)) \
                 +w*v*(1/(v**2 + (x-b+self.narrowModulation)**2) - 1/(v**2+(x-b-self.narrowModulation)**2))- k
     
-    def __narrowFuncPart1(self, x, a, b):
-        return a*(exp(-2*(x-b+self.narrowModulation)**2/self.c**2)-exp(-2*(x-b-self.narrowModulation)**2/self.c**2))
+    def __narrowFunc(self,x, a, d, q, w, v):
+        return a*exp(-2*(x**2/self.c**2))+ d*(q**2/(x**2+q**2)) +w*(v**2/(x**2+v**2))
+
+    def __narrowFuncPart1(self, x, a):
+        return a*exp(-2*(x**2/self.c**2))
     
-    def __narrowFuncPart2(self, x,  b, d, q):
-        return d*(exp(-2*(x-b+self.narrowModulation)**2/q**2)-exp(-2*(x-b-self.narrowModulation)**2/q**2)) 
+    def __narrowFuncPart2(self, x,   d, q):
+        return d*(q**2/(x**2+q**2)) 
     
-    def __narrowFuncPart3(self, x, b, w, v, k):
-        return w*v*(1/(v**2 + (x-b+self.narrowModulation)**2) - 1/(v**2+(x-b-self.narrowModulation)**2))- k
+    def __narrowFuncPart3(self, x, w, v):
+        return w*(v**2/(x**2+v**2))
         
         # y1 = a*(exp(-2*(x-b+self.narrowModulation)**2/self.c**2)-exp(-2*(x-b-self.narrowModulation)**2/self.c**2))
         # + d*(q**2)*(1/(q**2 + (x-b+self.narrowModulation)**2) - 1/(q**2+(x-b-self.narrowModulation)**2))
@@ -97,7 +103,7 @@ class SpectrCalculation():
         X = full[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__fullFuncPart1,x_min,x_max,args=(parameters.full_a, parameters.full_b, parameters.full_c))
+        s = integrate.quad(self.__fullFuncPart1,x_min,x_max,args=(parameters.full_a, parameters.full_c))
         logging.info(f"full part1 {s}")
         return s
 
@@ -105,7 +111,7 @@ class SpectrCalculation():
         X = full[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__fullFuncPart2,x_min,x_max,args=(parameters.full_b, parameters.full_d, parameters.full_q, parameters.full_k))
+        s = integrate.quad(self.__fullFuncPart2,x_min,x_max,args=(parameters.full_d, parameters.full_q))
         logging.info(f"full part2 {s}")
         return s
 
@@ -114,7 +120,7 @@ class SpectrCalculation():
         X = full[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.fullFunc,x_min,x_max,args=(parameters.full_a,parameters.full_b, parameters.full_c, parameters.full_d, parameters.full_q, parameters.full_k))
+        s = integrate.quad(self.__fullFunc,x_min,x_max,args=(parameters.full_a, parameters.full_c, parameters.full_d, parameters.full_q))
         logging.info(f"full {s}")
         return s
     
@@ -129,7 +135,7 @@ class SpectrCalculation():
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__narrowFuncPart1,x_min,x_max,args=(parameters.narrow_a, parameters.narrow_b))
+        s = integrate.quad(self.__narrowFuncPart1,x_min,x_max,args=(parameters.narrow_a))
         logging.info(f"narrow part1 {s}")
         return s
     
@@ -137,7 +143,7 @@ class SpectrCalculation():
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__narrowFuncPart2, x_min, x_max, args=(parameters.narrow_b, parameters.narrow_d, parameters.narrow_q))
+        s = integrate.quad(self.__narrowFuncPart2, x_min, x_max, args=(parameters.narrow_d, parameters.narrow_q))
         logging.info(f"narrow part2 {s}")
         return s
 
@@ -145,7 +151,7 @@ class SpectrCalculation():
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.__narrowFuncPart3, x_min, x_max, args=(parameters.narrow_b, parameters.narrow_w, parameters.narrow_v, parameters.narrow_k))
+        s = integrate.quad(self.__narrowFuncPart3, x_min, x_max, args=(parameters.narrow_w, parameters.narrow_v))
         logging.info(f"narrow part3 {s}")
         return s
     
@@ -153,7 +159,8 @@ class SpectrCalculation():
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
-        s = integrate.quad(self.narrowFunc, x_min, x_max, args=(parameters.narrow_a, parameters.narrow_b, parameters.narrow_d, parameters.narrow_q, parameters.narrow_w, parameters.narrow_v, parameters.narrow_k))
+        self.c = 6.025
+        s = integrate.quad(self.__narrowFunc, x_min, x_max, args=(parameters.narrow_a, parameters.narrow_d, parameters.narrow_q, parameters.narrow_w, parameters.narrow_v))
         logging.info(f"narrow {s}")
         return s
     
