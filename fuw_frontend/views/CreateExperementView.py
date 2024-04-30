@@ -92,6 +92,10 @@ class CreateBar(QWidget):
         self.calculationButton.setText("Calculation")
         self.calculationButton.setEnabled(False)
         layout.addWidget(self.calculationButton)
+        self.saveExlButton = QPushButton(self)
+        self.saveExlButton.setText("Save exel")
+        self.saveExlButton.setEnabled(False)
+        layout.addWidget(self.saveExlButton)
         return layout
     
     def bind(self, item:Experiment):
@@ -130,6 +134,9 @@ class CreateBar(QWidget):
     def setCalculationButtonListener(self, listener)->None:
         self.calculationButton.clicked.connect(listener)
 
+    def setSaveExelButtonListener(self, listener)->None:
+        self.saveExlButton.clicked.connect(listener)
+
     def save(self):
         self.model.description=self.descriptionEdit.toPlainText()
         self.model.parameter.fullModulation = float(self.fullModulation.getValue())
@@ -151,6 +158,7 @@ class CreateBar(QWidget):
             self.enabled(True)
         else:
             self.enabled(False)
+            self.saveExlButton.setEnabled(True)
         if len(item.meterings)>0:
             self.calculationButton.setEnabled(True)
         else:

@@ -73,5 +73,8 @@ class Ui_MainWindow(object):
     def setSelectExperementInList(self, listener)->None:
         self.experementListLayout.setSelectExperement(listener)
 
+    def setSaveExelButtonListener(self, listener)->None:
+        self.__createWidget.setSaveExelButtonListener(listener)
+
 
 

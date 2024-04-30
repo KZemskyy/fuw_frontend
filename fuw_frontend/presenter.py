@@ -10,6 +10,7 @@ import os
 import json
 from json import JSONEncoder
 from datetime import date, datetime
+from .saveExls import saveExls
 
 FULL = r'^ao_.*dat$'
 NARROW = r'^au_.*dat$'
@@ -35,6 +36,7 @@ class Presenter():
         self.__ui.setSaveButtonListener(self.saveExperement)
         self.__ui.setRecordButtonListener(self.downLoad)
         self.__ui.setCalculationButtonListener(self.calculation)
+        self.__ui.setSaveExelButtonListener(self.saveExel)
         self.__ui.setSelectExperementInList(self.selectExperement)
         
         
@@ -144,3 +146,6 @@ class Presenter():
             self.__spectrCalculation.culculate(experement.parameter, metering)
             metering.status = MeteringStatus.CALCULATE
         experement.status = ExperimentStatus.CALCULATE
+    
+    def saveExel(self):
+        saveExls(self.__model.getSelectedExperement())
