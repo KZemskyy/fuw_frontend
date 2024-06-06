@@ -144,8 +144,12 @@ class ResultView(QVBoxLayout):
             fSquare = value.result.squarFull.toString()
             self.fSquare.setText(f"Full Square: {fSquare}")
             narrow = value.result.getNarrowValue()
-            self.nCoefficient.setText(f"Narrow coefficient: a={narrow[0]:.5f}, b={narrow[1]:.5f}, d={narrow[2]:.5f} q={narrow[3]:.5f}, w={narrow[4]:.5f} v={narrow[5]:.5f} k={narrow[6]:.5f}")
+            if narrow[0] !=None:
+                self.nCoefficient.setText(f"Narrow coefficient: a={narrow[0]:.5f}, b={narrow[1]:.5f}, d={narrow[2]:.5f} q={narrow[3]:.5f}, w={narrow[4]:.5f} v={narrow[5]:.5f} k={narrow[6]:.5f}")
+            else:
+                self.nCoefficient.setText("Narrow coefficient: ")
             nSquare = value.result.squarNarrow.toString()
+            logging.info(nSquare)
             self.nSquare.setText(f"Narrow Square: {nSquare}")
             self.showFPlotButton.setEnabled(True)
             self.showNPlotButton.setEnabled(True)
