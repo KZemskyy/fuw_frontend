@@ -50,9 +50,9 @@ def saveExls(experement:Experiment)->None:
         worksheet.write(i+1, 14, result.squarFull.s[0])
         worksheet.write(i+1, 15, result.squarFull.s1[0])
         worksheet.write(i+1, 16, result.squarFull.s2[0])
-        worksheet.write(i+1, 17, result.squarNarrow.s[0])
-        worksheet.write(i+1, 18, result.squarNarrow.s1[0])
-        worksheet.write(i+1, 19, result.squarNarrow.s2[0])
-        worksheet.write(i+1, 20, result.squarNarrow.s3[0])
+        worksheet.write(i+1, 17, result.squarNarrow.s[0] if result.squarNarrow.s!=None else "")
+        worksheet.write(i+1, 18, result.squarNarrow.s1[0] if result.squarNarrow.s1!=None else "")
+        worksheet.write(i+1, 19, result.squarNarrow.s2[0] if result.squarNarrow.s2!=None else "")
+        worksheet.write(i+1, 20, result.squarNarrow.s3[0] if result.squarNarrow.s3!=None else "")
 
     workbook.close()

@@ -91,9 +91,12 @@ class Presenter():
         experent = self.__model._selectedExperement
         logging.info(experent.meterings)
         for files in fileList:
-            metering = Metering(_Metering__description=f"{os.path.basename(files['full'])} {os.path.basename(files['narrow'])}")
+            metering = Metering(_Metering__description=f"{os.path.basename(files['full'])} {os.path.basename(files['narrow']) if files['narrow']!=None else ''}")
             metering.full = self.__downLoadData(files["full"])
-            metering.narrow = self.__downLoadData(files["narrow"])
+            if files["narrow"] !=None:
+                metering.narrow = self.__downLoadData(files["narrow"])
+            else:
+                metering.narrow = []
             logging.info(f"m {metering}")
             experent.meterings.append(metering)
         self.__ui.setExperement(self.__model.getSelectedExperement())
@@ -112,8 +115,13 @@ class Presenter():
         logging.info(f"fulll =P {full}")
         logging.info(f"narrow =P {narrow}")
         result = []
-        for i in range(min(len(full), len(narrow))):
-            result.append({"full":full[i], "narrow":narrow[i]})
+        for i in range(len(full)):
+            index = int(os.path.splitext(os.path.basename(full[i]))[0])+1
+            n = list(filter(lambda f: True if int(os.path.splitext(os.path.basename(f))[0]) == index else False, narrow))
+            if len(n)==1:
+                result.append({"full":full[i], "narrow":n[0]})
+            else:
+                result.append({"full":full[i], "narrow":None})
         return result
 
     def load(self):

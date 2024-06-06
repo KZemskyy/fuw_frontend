@@ -78,7 +78,7 @@ class SpectrCalculation():
         ns2 = self.__squareNarrowPart2(metering.narrow, result)
         ns3 = self.__squareNarrowPart3(metering.narrow, result)
         nd = self.__squareNarrowDef(metering.narrow)
-        logging.info(f"s - {ns[0]}  s1+s2+s3 - {ns1[0]+ns2[0]+ns3[0]}")
+        # logging.info(f"s - {ns[0]}  s1+s2+s3 - {ns1[0]+ns2[0]+ns3[0]}")
         result.squarFull = Square(s=fs, s1=fs1, s2=fs2, default=fd)
         result.squarNarrow = Square(s=ns, s1=ns1, s2=ns2, s3=ns3, default=nd)
         metering.result = result
@@ -91,6 +91,9 @@ class SpectrCalculation():
         return popt
     
     def __calculateNarrow(self , narrow, a_min, min)->tuple:
+        logging.info(narrow)
+        if len(narrow) == 0:
+            return (None,None,None,None,None,None,None)
         x = narrow[:,0]
         y = narrow[:,1]
         self.narrowCoefficients[0] = a_min
@@ -132,6 +135,8 @@ class SpectrCalculation():
         return s1
     
     def __squareNarrowPart1(self, narrow, parameters:Result):
+        if len(narrow) == 0:
+            return None
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
@@ -140,6 +145,8 @@ class SpectrCalculation():
         return s
     
     def __squareNarrowPart2(self, narrow, parameters:Result):
+        if len(narrow) == 0:
+            return None
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
@@ -148,6 +155,8 @@ class SpectrCalculation():
         return s
 
     def __squareNarrowPart3(self, narrow, parameters:Result):
+        if len(narrow) == 0:
+            return None
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
@@ -156,6 +165,8 @@ class SpectrCalculation():
         return s
     
     def __squareNarrow(self, narrow, parameters:Result):
+        if len(narrow) == 0:
+            return None
         X = narrow[:,0]
         x_min = np.min(X)
         x_max = np.max(X)
@@ -165,6 +176,8 @@ class SpectrCalculation():
         return s
     
     def __squareNarrowDef(self, narrow):
+        if len(narrow) == 0:
+            return None
         X = narrow[:,0]
         y= narrow[:,1]
         s= np.trapz(y,x=X)
