@@ -24,7 +24,7 @@ from PySide6.QtWidgets import (QApplication, QGraphicsView, QHBoxLayout, QHeader
 from .CreateExperementView import CreateBar
 from .ExperementListView import ExperementListView
 from .ResultView import ResultView
-from ..Model import Experiment
+from ..Model import Experiment, Model
 
 class Ui_MainWindow(object):
         
@@ -40,8 +40,8 @@ class Ui_MainWindow(object):
         self.widget1.setGeometry(QRect(260, 0, 771, 571))
         self.experementListLayout = ExperementListView(self.widget1)
         
-        self.result =ResultView(self.widget1)
-        self.experementListLayout.addLayout(self.result)
+        self.resultView =ResultView(self.widget1)
+        self.experementListLayout.addLayout(self.resultView)
 
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -61,7 +61,7 @@ class Ui_MainWindow(object):
 
     def setExperement(self,experement:Experiment)->None:
         self.__createWidget.bind(experement)
-        self.result.setMeteringList(experement.meterings)
+        self.resultView.setMeteringList(experement.meterings)
     
     def setRecordButtonListener(self, listener)->None:
         self.__createWidget.setRecordButtonListener(listener)
@@ -75,6 +75,12 @@ class Ui_MainWindow(object):
 
     def setSaveExelButtonListener(self, listener)->None:
         self.__createWidget.setSaveExelButtonListener(listener)
+    
+    def refresh(self, model:Model)->None:
+        self.__createWidget.bind(model.getSelectedExperement())
+        self.experementListLayout.setExperementList(model.getExperementList())
+        self.resultView.setMeteringList(model.getSelectedExperement().meterings)
+        
 
 
 

@@ -56,14 +56,16 @@ class SpectrCalculation():
     
 
     def culculate(self, parameter:Parameter, metering:Metering)->Metering:
+        logging.info(f"Start calulation {metering.description}")
         self.fullModulation = parameter.fullModulation
         self.narrowModulation = parameter.narrowModulation
         
         popt = self.__calculateFull(metering.full)
-        
+        logging.info(popt)
         self.c = popt[2]
         a_min = 0.9*popt[0]
         min = 0.5*popt[3]
+        logging.info(f" c = {self.c} a_min = {a_min} min = {min}")
         popt1 = self.__calculateNarrow(metering.narrow,a_min,min)
 
         result = Result(full_a = popt[0],full_b = popt[1],full_c = popt[2], full_d = popt[3],full_q = popt[4],full_k = popt[5],narrow_a = popt1[0],
@@ -91,13 +93,14 @@ class SpectrCalculation():
         return popt
     
     def __calculateNarrow(self , narrow, a_min, min)->tuple:
-        logging.info(narrow)
+        logging.info("Start calculation Narrow")
         if len(narrow) == 0:
             return (None,None,None,None,None,None,None)
         x = narrow[:,0]
         y = narrow[:,1]
         self.narrowCoefficients[0] = a_min
         self.narrowCoefficients[2] = min
+        logging.info(self.narrowCoefficients)
         popt, pcov = curve_fit(self.narrowFunc, x, y, self.narrowCoefficients, bounds=((a_min, 0, 0, -np.inf, 0, -np.inf, -np.inf),
                                                                                         (np.inf, np.inf, np.inf, 2, np.inf, 2, np.inf)))
         return popt

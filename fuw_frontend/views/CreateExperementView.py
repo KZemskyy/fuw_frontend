@@ -40,7 +40,7 @@ class CreateBar(QWidget):
 
         self.saveButton = QPushButton(self)
         self.saveButton.setText("Save")
-        self.saveButton.setEnabled(False)
+        self.saveButton.setEnabled(True)
         self.saveButton.clicked.connect(self.save)
         self.layout.addWidget(self.saveButton)
         
@@ -151,7 +151,7 @@ class CreateBar(QWidget):
         self.narrowLabel.setEnabled(enable)
         self.narrowModulation.setEnabled(enable)
         self.recordButton.setEnabled(enable)
-        self.saveButton.setEnabled(enable)
+        # self.saveButton.setEnabled(enable)
 
     def setActiveComponent(self, item:Experiment):
         if item.status == ExperimentStatus.EDIT:

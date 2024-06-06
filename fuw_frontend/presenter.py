@@ -154,6 +154,7 @@ class Presenter():
             self.__spectrCalculation.culculate(experement.parameter, metering)
             metering.status = MeteringStatus.CALCULATE
         experement.status = ExperimentStatus.CALCULATE
+        self.getUI().refresh(self.__model)
     
     def saveExel(self):
         saveExls(self.__model.getSelectedExperement())
