@@ -1,19 +1,9 @@
 
 import logging
-from typing import Optional
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6 import QtCore
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
 
-from PySide6.QtWidgets import (QApplication, QGraphicsView, QHBoxLayout, QHeaderView,
-    QLabel, QLineEdit, QMainWindow, QPushButton,
-    QSizePolicy, QTableView, QTextEdit, QVBoxLayout,
-    QWidget)
+from PySide6.QtCore import Qt
+from PySide6 import QtCore
+from PySide6.QtWidgets import (QHBoxLayout, QLabel, QPushButton, QTableView, QVBoxLayout, QWidget)
 
 from .utils import LineEdit
 from ..Model import Metering, MeteringStatus, Result
@@ -45,44 +35,35 @@ class MeteringListModel(QtCore.QAbstractTableModel):
         column = index.column()
         if column == 0:
             return metering.description
+        result = metering.result
+        if result == None or column == 5:
+            return ""
         if column == 1:
             try:
-                result = metering.result
-                if result == None:
-                    return ""
-                full = metering.result.getFullValue()
+                full = result.getFullValue()
                 return f"(a={full[0]}, b={full[1]}, c={full[2]} d={full[3]}, q={full[4]} k={full[5]})"
             except:
                 return ""            
         if column == 2:
             try:
-                result = metering.result
-                if result == None:
-                    return ""
-                return metering.result.squarFull.toString()
+                return result.squarFull.toString()
             except:
                 return ""
         if column == 3:
             try:
-                result = metering.result
-                if result == None:
-                    return ""
-                narrow = metering.result.getNarrowValue()
+                narrow = result.getNarrowValue()
                 return f"(a={narrow[0]}, b={narrow[1]}, d={narrow[2]} q={narrow[3]}, w={narrow[4]} v={narrow[5]} k={narrow[6]})"
             except:
                 return ""            
         if column == 4:
             try:
-                result = metering.result
-                if result == None:
-                    return ""
                 return metering.result.squarNarrow.toString()
             except:
                 return ""
         if column == 5:
             return metering.status
         
-    def getMetering(self, index):
+    def getMetering(self, index)->Metering:
         return self._data[index.row()]  
 
 class ResultView(QVBoxLayout):
@@ -98,34 +79,35 @@ class ResultView(QVBoxLayout):
 
         self.recordTable = QTableView(parent)
         self.addWidget(self.recordTable)
-        self.recordTable.doubleClicked.connect(self.selectMetering)
+        self.recordTable.doubleClicked.connect(self.__selectMetering)
 
         self.fCoefficient = QLabel(parent)
-        self.fCoefficient.setText("Full coefficient: ")
+        # self.fCoefficient.setText("Full coefficient: ")
         self.addWidget(self.fCoefficient)
         self.fSquare = QLabel(parent)
-        self.fSquare.setText("Full Square: ")
+        # self.fSquare.setText("Full Square: ")
         self.addWidget(self.fSquare)
         self.nCoefficient = QLabel(parent)
-        self.nCoefficient.setText("Narrow coefficient: ")
+        # self.nCoefficient.setText("Narrow coefficient: ")
         self.addWidget(self.nCoefficient)
         self.nSquare = QLabel(parent)
-        self.nSquare.setText("Narrow Square: ")
+        # self.nSquare.setText("Narrow Square: ")
         self.addWidget(self.nSquare)
-        self.buttonsLayout = self.setupButtonsLayout()
+        self.buttonsLayout = self.__setupButtonsLayout()
         self.addLayout(self.buttonsLayout)
+        # self.__selectMetering()
 
-    def setupButtonsLayout(self)->QHBoxLayout:
+    def __setupButtonsLayout(self)->QHBoxLayout:
         layout = QHBoxLayout()
         self.showFPlotButton = QPushButton()
         self.showFPlotButton.setText("Show Full Plot")
         self.showFPlotButton.setEnabled(False)
-        self.showFPlotButton.clicked.connect(self.showFPlot)
+        self.showFPlotButton.clicked.connect(self.__showFPlot)
         layout.addWidget(self.showFPlotButton)
         self.showNPlotButton = QPushButton()
         self.showNPlotButton.setText("Show Narrow Plot")
         self.showNPlotButton.setEnabled(False)
-        self.showNPlotButton.clicked.connect(self.showNPlot)
+        self.showNPlotButton.clicked.connect(self.__showNPlot)
         layout.addWidget(self.showNPlotButton)
         return layout
 
@@ -133,9 +115,14 @@ class ResultView(QVBoxLayout):
         self.__dataModel = MeteringListModel(data)
         self.recordTable.setModel(self.__dataModel)
         self.recordTable.setWordWrap(True)
+        self.__selectMetering()
     
-    def selectMetering(self):
+    def __selectMetering(self):
         indexs = self.recordTable.selectionModel().selectedIndexes()
+        logging.info(f" index - {indexs}")
+        if len(indexs) == 0:
+            self.__emptyResult()
+            return
         logging.info(f" index - {indexs[0].row}")
         value = self.__dataModel.getMetering(indexs[0])
         if value.status == MeteringStatus.CALCULATE:
@@ -154,14 +141,17 @@ class ResultView(QVBoxLayout):
             self.showFPlotButton.setEnabled(True)
             self.showNPlotButton.setEnabled(True)
         else:
-            self.fCoefficient.setText("Full coefficient: ")
-            self.fSquare.setText("Full Square: ")
-            self.nCoefficient.setText("Narrow coefficient: ")
-            self.nSquare.setText("Narrow Square: ")
-            self.showFPlotButton.setEnabled(False)
-            self.showNPlotButton.setEnabled(False)
+            self.__emptyResult()
+    
+    def __emptyResult(self):
+        self.fCoefficient.setText("Full coefficient: ")
+        self.fSquare.setText("Full Square: ")
+        self.nCoefficient.setText("Narrow coefficient: ")
+        self.nSquare.setText("Narrow Square: ")
+        self.showFPlotButton.setEnabled(False)
+        self.showNPlotButton.setEnabled(False)
 
-    def showFPlot(self):
+    def __showFPlot(self):
         indexs = self.recordTable.selectionModel().selectedIndexes()
         logging.info(f" index - {indexs[0].row}")
         value = self.__dataModel.getMetering(indexs[0])
@@ -177,7 +167,7 @@ class ResultView(QVBoxLayout):
         plt1.show() 
         
 
-    def showNPlot(self):
+    def __showNPlot(self):
         indexs = self.recordTable.selectionModel().selectedIndexes()
         logging.info(f" index - {indexs[0].row}")
         value = self.__dataModel.getMetering(indexs[0])

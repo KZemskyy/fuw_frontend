@@ -49,13 +49,13 @@ class ExperementListView(QVBoxLayout):
         self.addWidget(self.label)
         self.experementlist = QTableView(parent)
         self.addWidget(self.experementlist)        
-        self.experementlist.doubleClicked.connect(self.selectExperement)
+        self.experementlist.doubleClicked.connect(self.__selectExperement)
 
     def setExperementList(self, data):
         self.__dataModel = ExperementListModel(data)
         self.experementlist.setModel(self.__dataModel)
     
-    def selectExperement(self):
+    def __selectExperement(self):
         indexs = self.experementlist.selectionModel().selectedIndexes()
         logging.info(f" index - {indexs[0].row}")
         value = self.__dataModel.getExperement(indexs[0])

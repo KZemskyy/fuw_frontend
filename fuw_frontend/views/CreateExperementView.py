@@ -9,9 +9,9 @@ class CreateBar(QWidget):
     def __init__(self, parent: QWidget ) -> None:
         super().__init__(parent)
         self.setGeometry(QRect(0, 12, 258, 521))
-        self.setupUi()
+        self.__setupUi()
     
-    def setupUi(self):
+    def __setupUi(self):
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
@@ -28,10 +28,10 @@ class CreateBar(QWidget):
         self.descriptionEdit.setEnabled(False)
         self.layout.addWidget(self.descriptionEdit)
 
-        self.parametrLayout = self.setupParameterLayout()
+        self.parametrLayout = self.__setupParameterLayout()
         self.layout.addLayout(self.parametrLayout)
 
-        self.buttonsLayout = self.setupButtonsLayout()
+        self.buttonsLayout = self.__setupButtonsLayout()
         self.layout.addLayout(self.buttonsLayout)
 
         self.status = LineEdit(self, "Status")
@@ -41,12 +41,12 @@ class CreateBar(QWidget):
         self.saveButton = QPushButton(self)
         self.saveButton.setText("Save")
         self.saveButton.setEnabled(True)
-        self.saveButton.clicked.connect(self.save)
+        self.saveButton.clicked.connect(self.__save)
         self.layout.addWidget(self.saveButton)
         
 
 
-    def setupParameterLayout(self)->QVBoxLayout:
+    def __setupParameterLayout(self)->QVBoxLayout:
         layout = QVBoxLayout()
         self.parametersLabel = QLabel(self)
         self.parametersLabel.setText("Parameters")
@@ -56,10 +56,6 @@ class CreateBar(QWidget):
         self.fullLineLabel.setText("Full line:")
         layout.addWidget(self.fullLineLabel)
 
-        # self.fullWidth=LineEdit(self, "width")
-        # self.fullWidth.setEnabled(False)
-        # layout.addLayout(self.fullWidth)
-
         self.fullModulation=LineEdit(self,"modulation")
         self.fullModulation.setEnabled(False)
         layout.addLayout(self.fullModulation)
@@ -67,10 +63,6 @@ class CreateBar(QWidget):
         self.narrowLabel = QLabel(self)
         self.narrowLabel.setText("Narrow Line:")
         layout.addWidget(self.narrowLabel)
-
-        # self.narrowWidth = LineEdit(self,"width")
-        # self.narrowWidth.setEnabled(False)
-        # layout.addLayout(self.narrowWidth)
 
         self.narrowModulation=LineEdit(self, "modulation")
         self.narrowModulation.setEnabled(False)
@@ -81,12 +73,12 @@ class CreateBar(QWidget):
         layout.addLayout(self.numberRec)
         return layout
     
-    def setupButtonsLayout(self)->QHBoxLayout:
+    def __setupButtonsLayout(self)->QHBoxLayout:
         layout = QHBoxLayout()
         self.recordButton = QPushButton(self)
         self.recordButton.setText("record")
         self.recordButton.setEnabled(False)
-        self.recordButton.clicked.connect(self.loadDataFromFiles)
+        self.recordButton.clicked.connect(self.__loadDataFromFiles)
         layout.addWidget(self.recordButton)
         self.calculationButton = QPushButton(self)
         self.calculationButton.setText("Calculation")
@@ -102,9 +94,7 @@ class CreateBar(QWidget):
         self.model = item
         print(item)
         self.descriptionEdit.setText(item.description)
-        # self.fullWidth.setText(item.parameter.fullWidth)
         self.fullModulation.setText(item.parameter.fullModulation)
-        # self.narrowWidth.setText(item.parameter.narrowWidth)
         self.narrowModulation.setText(item.parameter.narrowModulation)
         self.numberRec.setText(item.parameter.countMetering)
         self.status.setText(item.status.value)
@@ -125,7 +115,7 @@ class CreateBar(QWidget):
         self.recordButtonListener = listener
         
     
-    def loadDataFromFiles(self):
+    def __loadDataFromFiles(self):
         self.recordButtonListener()
         self.numberRec.setText(len(self.model.meterings))
         self.calculationButton.setEnabled(True)
@@ -137,7 +127,7 @@ class CreateBar(QWidget):
     def setSaveExelButtonListener(self, listener)->None:
         self.saveExlButton.clicked.connect(listener)
 
-    def save(self):
+    def __save(self):
         self.model.description=self.descriptionEdit.toPlainText()
         self.model.parameter.fullModulation = float(self.fullModulation.getValue())
         self.model.parameter.narrowModulation = float(self.narrowModulation.getValue())
