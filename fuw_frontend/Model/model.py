@@ -16,6 +16,7 @@ class MeteringStatus(str, Enum):
     CALCULATE = "Calculate"
     PARTLY_COMLETE = "partly_complete"
     COMLETE = "complete"
+    EXCEPT = "except"
 
 
 class Parameter():

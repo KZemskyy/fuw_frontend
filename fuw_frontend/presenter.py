@@ -1,7 +1,7 @@
 import logging
 from PySide6.QtWidgets import QMainWindow, QFileDialog
 from .Model import Model, Experiment, Metering, ExperimentStatus, MeteringStatus
-from .views import Ui_MainWindow
+from .views import Ui_MainWindow, LoadFilesDialog, CalculationResultDialog
 from .Model.calculation import SpectrCalculation
 from operator import attrgetter
 import numpy as np
@@ -90,16 +90,25 @@ class Presenter():
         logging.info(f"fileList - {fileList}")
         experent = self.__model._selectedExperement
         logging.info(experent.meterings)
+        result = []
         for files in fileList:
             metering = Metering(_Metering__description=f"{os.path.basename(files['full'])} {os.path.basename(files['narrow']) if files['narrow']!=None else ''}")
-            metering.full = self.__downLoadData(files["full"])
-            if files["narrow"] !=None:
-                metering.narrow = self.__downLoadData(files["narrow"])
-            else:
-                metering.narrow = []
-            logging.info(f"m {metering}")
-            experent.meterings.append(metering)
+            try:
+                metering.full = self.__downLoadData(files["full"])
+                if files["narrow"] !=None:
+                    metering.narrow = self.__downLoadData(files["narrow"])
+                else:
+                    metering.narrow = []
+                logging.info(f"m {metering}")
+                result.append({"name":files["full"], "status":"succes"})
+                result.append({"name":files["narrow"], "status":"succes"})
+                experent.meterings.append(metering)
+            except: 
+                result.append({"name":files["full"], "status":"exception"})
+                result.append({"name":files["narrow"], "status":"exception"})
         self.__ui.setExperement(self.__model.getSelectedExperement())
+        dialog = LoadFilesDialog(result)
+        dialog.exec()
 
     
     def __downLoadData(self, filename):
@@ -133,10 +142,6 @@ class Presenter():
                     j = json.load(file)
                     experement = Experiment(**j)
                     self.__model.putExperimentToList(experement)
-                    # logging.info(f"id {experement.id} desc {experement.description} create {experement.dateCreate} last {experement.lastChange} status {experement.status}")
-                    # logging.info(f"parameter: id {experement.parameter.id} count {experement.parameter.countMetering} fullM {experement.parameter.fullModulation} fullW {experement.parameter.fullWidth} narrowM {experement.parameter.narrowModulation} narrowW {experement.parameter.narrowWidth}")
-                    # for m in experement.meterings:
-                    #     logging.info(f"metering id {m.id} description {m.description} status {m.status} full {m.full} narrow {m.narrow}")
         self.__ui.experementListLayout.setExperementList(self.__model.getExperementList())
 
     def selectExperement(self, experement:Experiment):
@@ -149,12 +154,24 @@ class Presenter():
         experement = self.__model.getSelectedExperement()
         logging.info(f"experement - {experement.meterings}")
         logging.info(f"__spectrCalculation {self.__spectrCalculation.fullModulation}")
+        partCalculate = False
+        exceptionMetering = []
         for metering in experement.meterings:
             logging.info(f"metering type {type(metering)}")
-            self.__spectrCalculation.culculate(experement.parameter, metering)
-            metering.status = MeteringStatus.CALCULATE
-        experement.status = ExperimentStatus.CALCULATE
+            try:
+                self.__spectrCalculation.culculate(experement.parameter, metering)
+                metering.status = MeteringStatus.CALCULATE
+            except:
+                metering.status = MeteringStatus.EXCEPT
+                partCalculate = True
+                exceptionMetering.append(metering.description)
+        if partCalculate:
+            experement.status = ExperimentStatus.PARTLY_COMLETE
+        else:
+            experement.status = ExperimentStatus.CALCULATE
         self.getUI().refresh(self.__model)
+        report = CalculationResultDialog(experement.status,exceptionMetering)
+        report.exec()
     
     def saveExel(self):
         saveExls(self.__model.getSelectedExperement())

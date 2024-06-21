@@ -36,7 +36,7 @@ class MeteringListModel(QtCore.QAbstractTableModel):
         if column == 0:
             return metering.description
         result = metering.result
-        if result == None or column == 5:
+        if result == None and column < 5:
             return ""
         if column == 1:
             try:
